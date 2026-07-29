@@ -1,647 +1,578 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>2026 主流 AI 模型比較表</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#FDFAF8;
-    --surface:#FFFFFF;
-    --ink:#100703;
-    --ink-soft:#726863;
-    --line:#EFE3DC;
-    --primary:#E83C00;
-    --primary-soft:#FFF0EB;
-    --glow:#FF6600;
-    --ok:#1D7A46;   --ok-bg:#E6F4EC;
-    --warn:#B45309; --warn-bg:#FEF3E2;
-    --no:#B42318;   --no-bg:#FEE9E7;
-    --unknown:#726863; --unknown-bg:#F2EDEA;
-    --bar-track:#F2EAE5;
-    --radius:12px;
-    --mono:'IBM Plex Mono',ui-monospace,monospace;
-    --sans:'IBM Plex Sans','Noto Sans TC',system-ui,sans-serif;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{-webkit-text-size-adjust:100%}
-  body{
-    font-family:var(--sans);
-    background:var(--bg);
-    background-image:
-      radial-gradient(1200px 400px at 50% -100px, hsl(16 100% 45% / .06), transparent 70%);
-    color:var(--ink);
-    line-height:1.6;
-    padding:20px 14px 56px;
-    max-width:1100px;
-    margin:0 auto;
-  }
-
-  /* ── Header ─────────────────────────── */
-  header{margin-bottom:32px}
-  .stamp{
-    font-family:var(--mono);
-    font-size:11px;
-    font-weight:500;
-    letter-spacing:.14em;
-    color:var(--primary);
-    text-transform:uppercase;
-    display:inline-flex;align-items:center;gap:8px;
-    margin-bottom:14px;
-    padding:5px 12px;
-    border:1px solid #FDD5C8;
-    border-radius:99px;
-    background:hsl(16 100% 45% / .04);
-  }
-  .stamp::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 8px hsl(16 100% 50% / .8)}
-  h1{
-    font-family:var(--sans);
-    font-weight:700;
-    font-size:clamp(26px,5.6vw,42px);
-    line-height:1.2;
-    letter-spacing:-.02em;
-  }
-  h1 .grad{
-    background:linear-gradient(92deg,#E83C00,#E96A00);
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;color:transparent;
-  }
-  .sub{color:var(--ink-soft);font-size:14.5px;margin-top:10px;max-width:640px}
-
-  /* ── Legend ─────────────────────────── */
-  .legend{
-    display:flex;flex-wrap:wrap;gap:8px 14px;
-    margin-top:18px;font-size:12px;color:var(--ink-soft);
-    font-family:var(--mono);
-  }
-  .legend span{display:inline-flex;align-items:center;gap:5px}
-
-  /* ── Tier section ───────────────────── */
-  section{margin-top:40px}
-  .tier-head{
-    display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
-    margin-bottom:12px;
-  }
-  .tier-head h2{
-    font-family:var(--sans);
-    font-weight:700;font-size:21px;letter-spacing:-.01em;
-  }
-  .tier-head h2::before{content:"// ";color:var(--primary);font-family:var(--mono);font-weight:600;font-size:16px}
-  .tier-head .price-band{
-    font-family:var(--mono);font-size:11px;letter-spacing:.1em;
-    color:var(--primary);text-transform:uppercase;
-  }
-
-  .table-wrap{
-    background:var(--surface);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    box-shadow:0 1px 2px rgba(16,7,3,.04),0 8px 24px -12px rgba(232,60,0,.06);
-  }
-  table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
-  thead th{
-    font-family:var(--mono);
-    font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--ink-soft);font-weight:600;
-    text-align:left;
-    padding:12px 14px 9px;
-    border-bottom:1px solid var(--line);
-    background:#FDFAF8;
-    white-space:nowrap;
-  }
-  tbody td{
-    padding:14px;
-    border-bottom:1px solid var(--line);
-    vertical-align:top;
-  }
-  tbody tr:last-child td{border-bottom:none}
-  tbody tr:hover{background:#FFF8F5}
-
-  /* sticky first column */
-  th:first-child,td:first-child{
-    position:sticky;left:0;background:var(--surface);
-    min-width:150px;max-width:190px;
-    box-shadow:1px 0 0 var(--line);
-  }
-  thead th:first-child{background:#FDFAF8}
-  tbody tr:hover td:first-child{background:#FFF8F5}
-
-  .model-name{font-weight:600;font-size:14.5px;line-height:1.35;letter-spacing:-.01em}
-  .vendor{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-soft);margin-top:3px;font-family:var(--mono)}
-  .dot{width:8px;height:8px;border-radius:50%;flex:none}
-  .dot.anthropic{background:#B0562F}
-  .dot.openai{background:#0F7B6C}
-  .dot.google{background:#2A5BD7}
-  .dot.xai{background:#30343B}
-  .dot.deepseek{background:#4B3FBF}
-  .dot.cn-kimi{background:#111}
-  .dot.cn-qwen{background:#6236FF}
-  .dot.cn-glm{background:#1F6FEB}
-  .dot.cn-tencent{background:#0A6CFF}
-
-  .date{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
-  .date small{display:block;color:var(--ink-soft);font-family:var(--sans);font-size:11px}
-
-  /* ── Signature: inline cost bar ─────── */
-  .price{min-width:170px}
-  .price .nums{font-family:var(--mono);font-size:13px;font-weight:600;white-space:nowrap}
-  .price .nums em{font-style:normal;color:var(--ink-soft);font-weight:400}
-  .costbar{
-    margin-top:6px;height:6px;border-radius:3px;
-    background:var(--bar-track);position:relative;overflow:hidden;max-width:150px;
-  }
-  .costbar i{
-    position:absolute;inset:0 auto 0 0;border-radius:3px;
-    background:linear-gradient(90deg,#E83C00,#FF9A3D);
-  }
-  .price .note{font-size:11px;color:var(--ink-soft);margin-top:4px;line-height:1.45}
-
-  .cap{max-width:270px;min-width:210px}
-  .cap b{color:var(--primary)}
-  .feat{max-width:250px;min-width:200px;color:var(--ink-soft);font-size:13px}
-  .feat b{color:var(--ink)}
-
-  .badge{
-    display:inline-flex;align-items:center;gap:5px;
-    font-size:12px;font-weight:500;
-    padding:3px 10px;border-radius:99px;white-space:nowrap;
-    font-family:var(--mono);
-  }
-  .badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
-  .badge.ok{color:var(--ok);background:var(--ok-bg)}
-  .badge.warn{color:var(--warn);background:var(--warn-bg)}
-  .badge.no{color:var(--no);background:var(--no-bg)}
-  .badge.unknown{color:var(--unknown);background:var(--unknown-bg)}
-  .bedrock-note{display:block;font-size:11px;color:var(--ink-soft);margin-top:5px;max-width:150px;white-space:normal;font-family:var(--sans)}
-
-  .swipe-hint{
-    font-size:11px;color:var(--ink-soft);margin-top:6px;
-    font-family:var(--mono);letter-spacing:.05em;
-  }
-
-  /* ── Daily news ─────────────────────── */
-  .daily-news{
-    margin-top:44px;background:var(--surface);
-    border:1px solid #FDD5C8;border-radius:var(--radius);
-    padding:20px 22px;font-size:13px;
-    box-shadow:0 1px 2px rgba(16,7,3,.04),0 12px 32px -16px rgba(232,60,0,.12);
-    position:relative;overflow:hidden;
-  }
-  .daily-news::before{
-    content:"";position:absolute;inset:0 0 auto 0;height:3px;
-    background:linear-gradient(90deg,#E83C00,#FF9A3D);
-  }
-  .daily-news h3{
-    font-family:var(--sans);font-weight:700;font-size:17px;
-    margin-bottom:4px;letter-spacing:-.01em;
-  }
-  .daily-news .news-date{
-    font-family:var(--mono);font-size:11px;color:var(--primary);
-    letter-spacing:.08em;margin-bottom:12px;text-transform:uppercase;
-  }
-  .daily-news h4{
-    font-size:13.5px;font-weight:600;margin:16px 0 6px;color:var(--ink);
-  }
-  .daily-news li{margin:6px 0 6px 1.2em}
-  .daily-news li a{color:var(--primary);word-break:break-all}
-  .daily-news .none{color:var(--ink-soft)}
-
-  /* ── Footnotes ──────────────────────── */
-  .notes{
-    margin-top:40px;background:var(--primary-soft);
-    border:1px solid #FDD5C8;border-radius:var(--radius);
-    padding:20px 22px;font-size:13px;
-  }
-  .notes h3{
-    font-family:var(--sans);font-weight:700;font-size:16px;
-    margin-bottom:10px;color:var(--primary);letter-spacing:-.01em;
-  }
-  .notes li{margin:6px 0 6px 1.2em}
-  footer{
-    margin-top:28px;font-family:var(--mono);
-    font-size:11px;color:var(--ink-soft);letter-spacing:.06em;
-  }
-
-  @media (max-width:640px){
-    body{padding:16px 10px 48px}
-    thead th,tbody td{padding:11px 10px}
-  }
-  @media (prefers-reduced-motion:reduce){
-    *{transition:none!important;animation:none!important}
-  }
-</style>
+<script src="./dc-runtime.js"></script>
 </head>
 <body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro TC","PingFang TC","Noto Sans TC",sans-serif;background:#fff;color:#1d1d1f;line-height:1.6}
+    a{color:#0071e3;text-decoration:none}
+    a:hover{color:#0077ed;text-decoration:underline}
+    button{font-family:inherit}
+    select{font-family:inherit}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</helmet>
 
-<header>
-  <div class="stamp">Frontier Model Index · 2026.07.29</div>
-  <h1>2026 主流 <span class="grad">AI 模型</span>比較表</h1>
-  <p class="sub">涵蓋 Anthropic、OpenAI、Google、xAI 及中國的 DeepSeek、月之暗面、阿里通義、智譜、騰訊最新一波模型：功能、API 價格、能力與 Amazon Bedrock 支援狀況。價格單位為每百萬 tokens（輸入 / 輸出，美元）。</p>
-  <div class="legend">
-    <span><span class="dot anthropic"></span>Anthropic</span>
-    <span><span class="dot openai"></span>OpenAI</span>
-    <span><span class="dot google"></span>Google</span>
-    <span><span class="dot xai"></span>xAI</span>
-    <span><span class="dot deepseek"></span>DeepSeek</span>
-    <span><span class="dot cn-kimi"></span>月之暗面</span>
-    <span><span class="dot cn-qwen"></span>通義</span>
-    <span><span class="dot cn-glm"></span>智譜</span>
-    <span><span class="dot cn-tencent"></span>騰訊</span>
-    <span style="margin-left:auto">價格條 = 相對輸出單價（以 $50 為滿格）</span>
+<nav style="position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);background:rgba(255,255,255,0.72);border-bottom:1px solid rgba(0,0,0,0.08)">
+  <div style="max-width:1040px;margin:0 auto;padding:0 22px;height:48px;display:flex;align-items:center;gap:26px">
+    <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em">Model Index</span>
+    <div style="margin-left:auto;display:flex;gap:22px;flex-wrap:wrap;font-size:12.5px">
+      <a href="#charts" style="color:#494949">圖表</a>
+      <a href="#flagship" style="color:#494949">旗艦</a>
+      <a href="#highend" style="color:#494949">主力</a>
+      <a href="#workhorse" style="color:#494949">性價比</a>
+      <a href="#china" style="color:#494949">中國模型</a>
+      <a href="#light" style="color:#494949">輕量</a>
+      <a href="#compare" style="color:#494949">比較</a>
+      <a href="#news" style="color:#494949">新聞</a>
+      <a href="#notes" style="color:#494949">備註</a>
+    </div>
+  </div>
+</nav>
+
+<header data-screen-label="Hero" style="background:#fff;padding:110px 22px 96px;text-align:center">
+  <div style="max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:22px;align-items:center">
+    <div style="font-size:12px;letter-spacing:0.14em;color:#6e6e73;font-variant-numeric:tabular-nums">FRONTIER MODEL INDEX · 2026.07.29</div>
+    <h1 style="margin:0;font-size:clamp(44px,7vw,76px);font-weight:700;letter-spacing:-0.02em;line-height:1.08">2026 主流 AI 模型</h1>
+    <p style="margin:0;font-size:clamp(19px,2.6vw,24px);color:#6e6e73;font-weight:400;max-width:640px;text-wrap:pretty">18 款模型，5 個層級。功能、API 價格、能力與 Amazon Bedrock 支援，一頁看完。</p>
+    <p style="margin:0;font-size:14px;color:#a1a1a6">價格單位為每百萬 tokens（輸入 / 輸出，美元）</p>
   </div>
 </header>
 
-<!-- ═══════ 頂級旗艦 ═══════ -->
-<section>
-  <div class="tier-head">
-    <h2>頂級旗艦</h2>
-    <span class="price-band">FLAGSHIP · 追求能力上限</span>
+<sc-if value="{{ showCharts }}" hint-placeholder-val="{{ true }}">
+<section id="charts" data-screen-label="Charts" style="background:#f5f5f7;padding:96px 22px;scroll-margin-top:60px">
+  <div style="max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:22px">
+    <div style="text-align:center;margin-bottom:26px">
+      <h2 style="margin:0;font-size:clamp(32px,4.6vw,48px);font-weight:700;letter-spacing:-0.015em">整體概覽</h2>
+      <p style="margin:12px auto 0;font-size:19px;color:#6e6e73;max-width:560px">先看位置，再看細節。</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px">
+      <div style="background:#fff;border-radius:22px;padding:34px 34px 26px;display:flex;flex-direction:column;gap:6px">
+        <h3 style="margin:0;font-size:21px;font-weight:600;letter-spacing:-0.01em">價格 × 能力</h3>
+        <p style="margin:0;font-size:13px;color:#6e6e73">縱軸 SWE-bench Pro（%）・橫軸輸出單價（$/M tokens）</p>
+        <div style="position:relative;height:300px;margin:22px 6px 6px 34px">
+          <div style="position:absolute;left:0;right:0;bottom:0;height:1px;background:#d2d2d7"></div>
+          <div style="position:absolute;left:0;right:0;bottom:28.6%;height:1px;background:#ececf0"></div>
+          <div style="position:absolute;left:0;right:0;bottom:57.1%;height:1px;background:#ececf0"></div>
+          <div style="position:absolute;left:0;right:0;bottom:85.7%;height:1px;background:#ececf0"></div>
+          <div style="position:absolute;left:-32px;bottom:-8px;font-size:11px;color:#a1a1a6">50</div>
+          <div style="position:absolute;left:-32px;bottom:calc(28.6% - 8px);font-size:11px;color:#a1a1a6">60</div>
+          <div style="position:absolute;left:-32px;bottom:calc(57.1% - 8px);font-size:11px;color:#a1a1a6">70</div>
+          <div style="position:absolute;left:-32px;bottom:calc(85.7% - 8px);font-size:11px;color:#a1a1a6">80</div>
+          <div style="position:absolute;left:19.2%;bottom:-22px;transform:translateX(-50%);font-size:11px;color:#a1a1a6">$10</div>
+          <div style="position:absolute;left:48.1%;bottom:-22px;transform:translateX(-50%);font-size:11px;color:#a1a1a6">$25</div>
+          <div style="position:absolute;left:96.2%;bottom:-22px;transform:translateX(-50%);font-size:11px;color:#a1a1a6">$50</div>
+          <div style="position:absolute;left:19.2%;bottom:37.7%;transform:translate(-50%,50%)">
+            <div style="width:13px;height:13px;border-radius:50%;background:#B0562F;box-shadow:0 0 0 4px rgba(176,86,47,0.15)"></div>
+            <div style="position:absolute;left:18px;top:-4px;font-size:12px;font-weight:600;white-space:nowrap">Sonnet 5</div>
+          </div>
+          <div style="position:absolute;left:48.1%;bottom:54.9%;transform:translate(-50%,50%)">
+            <div style="width:13px;height:13px;border-radius:50%;background:#B0562F;box-shadow:0 0 0 4px rgba(176,86,47,0.15)"></div>
+            <div style="position:absolute;left:18px;top:-4px;font-size:12px;font-weight:600;white-space:nowrap">Opus 4.8</div>
+          </div>
+          <div style="position:absolute;left:96.2%;bottom:86.6%;transform:translate(-50%,50%)">
+            <div style="width:13px;height:13px;border-radius:50%;background:#B0562F;box-shadow:0 0 0 4px rgba(176,86,47,0.15)"></div>
+            <div style="position:absolute;right:18px;top:-4px;font-size:12px;font-weight:600;white-space:nowrap">Fable 5</div>
+          </div>
+          <div style="position:absolute;left:57.7%;bottom:88.6%;transform:translate(-50%,50%)">
+            <div style="width:13px;height:13px;border-radius:50%;border:2.5px solid #0F7B6C;background:#fff;box-sizing:border-box"></div>
+            <div style="position:absolute;right:18px;top:-4px;font-size:12px;font-weight:600;white-space:nowrap;color:#0F7B6C">GPT-5.6 Sol <span style="font-weight:400;color:#a1a1a6">估</span></div>
+          </div>
+          <div style="position:absolute;left:76.9%;bottom:24.6%;transform:translate(-50%,50%)">
+            <div style="width:13px;height:13px;border-radius:50%;border:2.5px solid #0F7B6C;background:#fff;box-sizing:border-box"></div>
+            <div style="position:absolute;right:18px;top:-4px;font-size:12px;font-weight:600;white-space:nowrap;color:#0F7B6C">GPT-5.5 <span style="font-weight:400;color:#a1a1a6">估</span></div>
+          </div>
+          <div style="position:absolute;left:14.4%;bottom:14.3%;transform:translate(-50%,50%)">
+            <div style="width:13px;height:13px;border-radius:50%;border:2.5px solid #2A5BD7;background:#fff;box-sizing:border-box"></div>
+            <div style="position:absolute;left:18px;top:-4px;font-size:12px;font-weight:600;white-space:nowrap;color:#2A5BD7">3.6 Flash <span style="font-weight:400;color:#a1a1a6">估</span></div>
+          </div>
+          <div style="position:absolute;left:1.7%;bottom:22.9%;transform:translate(-50%,50%)">
+            <div style="width:13px;height:13px;border-radius:50%;border:2.5px solid #4B3FBF;background:#fff;box-sizing:border-box"></div>
+            <div style="position:absolute;left:18px;top:-4px;font-size:12px;font-weight:600;white-space:nowrap;color:#4B3FBF">DeepSeek V4-Pro <span style="font-weight:400;color:#a1a1a6">估</span></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:18px;margin-top:20px;font-size:12px;color:#6e6e73;flex-wrap:wrap">
+          <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:11px;height:11px;border-radius:50%;background:#B0562F"></span>兩項數據皆官方公布</span>
+          <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:11px;height:11px;border-radius:50%;border:2.5px solid #8e8e93;box-sizing:border-box"></span>估計值（空心點）</span>
+        </div>
+        <p style="margin:10px 0 0;font-size:12px;color:#a1a1a6">估計依據：Sol 以 AA 指數換算約 81；GPT-5.5 輸出價依輸入 $5 推估約 $40；3.6 Flash 依「接近 Pro」約 55；V4-Pro 價格已公布（$0.87）、分數推估。僅供方向參考。</p>
+      </div>
+
+      <div style="background:#fff;border-radius:22px;padding:34px 34px 26px;display:flex;flex-direction:column;gap:6px">
+        <h3 style="margin:0;font-size:21px;font-weight:600;letter-spacing:-0.01em">SWE-bench Pro</h3>
+        <p style="margin:0;font-size:13px;color:#6e6e73">同一基準下的代理編碼能力（%）</p>
+        <div style="display:flex;flex-direction:column;gap:18px;margin-top:26px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span style="font-weight:600">Claude Fable 5</span><span style="font-variant-numeric:tabular-nums;font-weight:600">80.3</span></div>
+            <div style="height:8px;border-radius:4px;background:#e8e8ed;overflow:hidden"><div style="width:80.3%;height:100%;border-radius:4px;background:#B0562F"></div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span style="font-weight:600">Claude Opus 4.8</span><span style="font-variant-numeric:tabular-nums;font-weight:600">69.2</span></div>
+            <div style="height:8px;border-radius:4px;background:#e8e8ed;overflow:hidden"><div style="width:69.2%;height:100%;border-radius:4px;background:#c9784f"></div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span style="font-weight:600">Claude Sonnet 5</span><span style="font-variant-numeric:tabular-nums;font-weight:600">63.2</span></div>
+            <div style="height:8px;border-radius:4px;background:#e8e8ed;overflow:hidden"><div style="width:63.2%;height:100%;border-radius:4px;background:#d99a76"></div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;font-size:13px"><span style="font-weight:600">GPT-5.5</span><span style="font-variant-numeric:tabular-nums;font-weight:600">58.6</span></div>
+            <div style="height:8px;border-radius:4px;background:#e8e8ed;overflow:hidden"><div style="width:58.6%;height:100%;border-radius:4px;background:#0F7B6C"></div></div>
+          </div>
+        </div>
+        <p style="margin:auto 0 0;padding-top:18px;font-size:12px;color:#a1a1a6">其餘模型未公布此基準；Terminal-Bench 等見各卡片。</p>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:34px 34px 30px">
+      <h3 style="margin:0;font-size:21px;font-weight:600;letter-spacing:-0.01em">輸出單價光譜</h3>
+      <p style="margin:2px 0 0;font-size:13px;color:#6e6e73">$/M tokens 輸出・僅列已公布定價的模型</p>
+      <div style="position:relative;height:150px;margin:10px 60px 0">
+        <div style="position:absolute;left:0;right:0;top:77px;height:2px;background:#d2d2d7;border-radius:1px"></div>
+        <div style="position:absolute;left:1.1%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#0A6CFF"></div>
+        <div style="position:absolute;left:1.1%;top:6px;transform:translateX(-50%);font-size:12px;white-space:nowrap"><b>混元 Hy-3</b> $0.56</div>
+        <div style="position:absolute;left:1.7%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#4B3FBF"></div>
+        <div style="position:absolute;left:1.7%;top:96px;transform:translateX(-92%);font-size:12px;white-space:nowrap"><b>V4-Pro</b> $0.87</div>
+        <div style="position:absolute;left:4.2%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#1F6FEB"></div>
+        <div style="position:absolute;left:4.2%;top:30px;transform:translateX(-50%);font-size:12px;white-space:nowrap"><b>GLM-5.2</b> $2.20</div>
+        <div style="position:absolute;left:9.6%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#B0562F"></div>
+        <div style="position:absolute;left:9.6%;top:120px;transform:translateX(-50%);font-size:12px;white-space:nowrap"><b>Haiku 4.5</b> $5</div>
+        <div style="position:absolute;left:11.5%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#30343B"></div>
+        <div style="position:absolute;left:12.1%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#0F7B6C"></div>
+        <div style="position:absolute;left:11.8%;top:96px;transform:translateX(-50%);font-size:12px;white-space:nowrap"><b>Grok・Luna</b> $6</div>
+        <div style="position:absolute;left:14.4%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#2A5BD7"></div>
+        <div style="position:absolute;left:14.4%;top:6px;transform:translateX(-50%);font-size:12px;white-space:nowrap"><b>3.6 Flash</b> $7.50</div>
+        <div style="position:absolute;left:19.2%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#B0562F"></div>
+        <div style="position:absolute;left:19.2%;top:30px;transform:translateX(-50%);font-size:12px;white-space:nowrap"><b>Sonnet 5</b> $10</div>
+        <div style="position:absolute;left:28.8%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#0F7B6C"></div>
+        <div style="position:absolute;left:29.4%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#111111"></div>
+        <div style="position:absolute;left:29.1%;top:120px;transform:translateX(-50%);font-size:12px;white-space:nowrap"><b>Terra・Kimi K3</b> $15</div>
+        <div style="position:absolute;left:48.1%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#B0562F"></div>
+        <div style="position:absolute;left:48.1%;top:6px;transform:translateX(-50%);font-size:12px;white-space:nowrap"><b>Opus 5 / 4.8</b> $25</div>
+        <div style="position:absolute;left:57.7%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#0F7B6C"></div>
+        <div style="position:absolute;left:57.7%;top:96px;transform:translateX(-50%);font-size:12px;white-space:nowrap"><b>GPT-5.6 Sol</b> $30</div>
+        <div style="position:absolute;left:96.2%;top:70px;transform:translateX(-50%);width:14px;height:14px;border-radius:50%;background:#B0562F"></div>
+        <div style="position:absolute;left:96.2%;top:30px;transform:translateX(-50%);font-size:12px;white-space:nowrap"><b>Fable 5</b> $50</div>
+      </div>
+    </div>
   </div>
-  <div class="table-wrap">
-  <table>
-    <thead><tr>
-      <th>模型</th><th>上市時間</th><th>API 價格</th><th>能力亮點</th><th>功能特色</th><th>Bedrock</th>
-    </tr></thead>
-    <tbody>
-      <tr>
-        <td>
-          <div class="model-name">Claude Fable 5</div>
-          <div class="vendor"><span class="dot anthropic"></span>Anthropic · Mythos 級</div>
-        </td>
-        <td class="date">2026-06-09</td>
-        <td class="price">
-          <div class="nums">$10 <em>/</em> $50</div>
-          <div class="costbar"><i style="width:100%"></i></div>
-          <div class="note">30 天資料保留要求</div>
-        </td>
-        <td class="cap">SWE-bench Pro <b>80.3%</b>、FrontierCode Diamond 29.3%。長時程自主任務目前最強。</td>
-        <td class="feat"><b>1M context</b>。可跨多日自主運作、規劃階段、委派子代理並自我驗證。</td>
-        <td><span class="badge ok">已支援</span><span class="bedrock-note">6/9 上架；7/1 起加強護欄後重新開放</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">GPT-5.6 Sol</div>
-          <div class="vendor"><span class="dot openai"></span>OpenAI · 旗艦</div>
-        </td>
-        <td class="date">2026-07-09</td>
-        <td class="price">
-          <div class="nums">$5 <em>/</em> $30</div>
-          <div class="costbar"><i style="width:60%"></i></div>
-        </td>
-        <td class="cap">AA 編碼代理指數 <b>80</b>（高 Fable 5 約 2.8 分、tokens 用量不到一半）；Agents' Last Exam 53.6。</td>
-        <td class="feat"><b>ultra 多代理模式</b>可平行協調多個代理；主打 token 效率（官方稱編碼省 54%）。</td>
-        <td><span class="badge ok">已支援</span><span class="bedrock-note">7/20 GA 上架 Bedrock（Sol/Terra/Luna 同步）</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">Gemini 3.5 Pro</div>
-          <div class="vendor"><span class="dot google"></span>Google · 旗艦</div>
-        </td>
-        <td class="date">未發布<small>合作夥伴測試中</small></td>
-        <td class="price"><div class="nums">—</div></td>
-        <td class="cap">傳出因幻覺率與可靠性未達標，DeepMind 重建底層架構；原定 6 月、7/17 兩度跳票，截至 7 月底仍僅少數企業合作夥伴測試中，未有公開時間表。</td>
-        <td class="feat">傳聞強化影片理解與前端／視覺程式碼生成。</td>
-        <td><span class="badge no">不支援</span><span class="bedrock-note">Gemini 系列走 Vertex AI</span></td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
-  <div class="swipe-hint">← 左右滑動看完整欄位 →</div>
 </section>
+</sc-if>
 
-<!-- ═══════ 高階主力 ═══════ -->
-<section>
-  <div class="tier-head">
-    <h2>高階主力</h2>
-    <span class="price-band">HIGH-END · 日常專業工作的甜蜜點</span>
+<div id="filters" style="background:#fff;border-bottom:1px solid #e8e8ed;padding:26px 22px;scroll-margin-top:60px">
+  <div style="max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <sc-for list="{{ vendorChips }}" as="chip" hint-placeholder-count="6">
+      <button sc-camel-on-click="{{ chip.onClick }}" style="padding:8px 18px;border-radius:980px;border:1px solid #d2d2d7;background:{{ chip.bg }};color:{{ chip.fg }};font-size:14px;cursor:pointer">{{ chip.label }}</button>
+    </sc-for>
+    <button sc-camel-on-click="{{ bdChip.onClick }}" style="margin-left:auto;padding:8px 18px;border-radius:980px;border:1px solid #d2d2d7;background:{{ bdChip.bg }};color:{{ bdChip.fg }};font-size:14px;cursor:pointer">{{ bdChip.label }}</button>
+    <sc-raw-select value="{{ sortVal }}" sc-camel-on-change="{{ onSort }}" style="padding:8px 14px;border-radius:980px;border:1px solid #d2d2d7;background:#fff;color:#1d1d1f;font-size:14px;cursor:pointer;appearance:auto">
+      <option value="default">預設排序</option>
+      <option value="price">輸出價 低 → 高</option>
+      <option value="date">最新上市</option>
+    </sc-raw-select>
   </div>
-  <div class="table-wrap">
-  <table>
-    <thead><tr>
-      <th>模型</th><th>上市時間</th><th>API 價格</th><th>能力亮點</th><th>功能特色</th><th>Bedrock</th>
-    </tr></thead>
-    <tbody>
-      <tr>
-        <td>
-          <div class="model-name">Claude Opus 5</div>
-          <div class="vendor"><span class="dot anthropic"></span>Anthropic</div>
-        </td>
-        <td class="date">2026-07-24</td>
-        <td class="price">
-          <div class="nums">$5 <em>/</em> $25</div>
-          <div class="costbar"><i style="width:50%"></i></div>
-          <div class="note">Fast 模式為 2 倍價、約 2.5 倍速</div>
-        </td>
-        <td class="cap">Frontier-Bench <b>43.3%</b>（Fable 5 為 33.7%）；OSWorld 2.0 以約 1/3 成本超越 Fable 5 最佳成績；Artificial Analysis 智能指數 61 現居總榜第一。</td>
-        <td class="feat"><b>1M context、128K 輸出</b>、思考預設開啟、effort 可調到 max、支援零資料保留（ZDR）、官方稱最對齊模型。</td>
-        <td><span class="badge ok">已支援</span><span class="bedrock-note">7/24 發布當日上架</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">Claude Opus 4.8</div>
-          <div class="vendor"><span class="dot anthropic"></span>Anthropic</div>
-        </td>
-        <td class="date">2026-05-28</td>
-        <td class="price">
-          <div class="nums">$5 <em>/</em> $25</div>
-          <div class="costbar"><i style="width:50%"></i></div>
-        </td>
-        <td class="cap">SWE-bench Pro <b>69.2%</b>。上一代主力，複雜推理與代理編碼仍屬第一梯隊。</td>
-        <td class="feat">1M context、ZDR。適合尚未遷移到 Opus 5 的既有工作流。</td>
-        <td><span class="badge ok">已支援</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">GPT-5.5</div>
-          <div class="vendor"><span class="dot openai"></span>OpenAI</div>
-        </td>
-        <td class="date">2026-04月</td>
-        <td class="price">
-          <div class="nums">約 $5 輸入</div>
-          <div class="note">輸出價未逐項核實；超過 272K 輸入以 2 倍計價</div>
-        </td>
-        <td class="cap">Terminal-Bench 2.0 <b>82.7%</b>、SWE-Bench Pro 58.6%。代理式編碼強項。</td>
-        <td class="feat">reasoning effort 五檔（none–xhigh）；深度整合 Codex。</td>
-        <td><span class="badge ok">已支援</span><span class="bedrock-note">4/28 起全家族上架</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">Grok 4.5</div>
-          <div class="vendor"><span class="dot xai"></span>xAI</div>
-        </td>
-        <td class="date">2026-07-08<small>4.6 預告 8/7 推出、4.7 隨後</small></td>
-        <td class="price">
-          <div class="nums">$2 <em>/</em> $6</div>
-          <div class="costbar"><i style="width:12%"></i></div>
-          <div class="note">快取輸入 $0.50；≥200K tokens 提示全費率加倍</div>
-        </td>
-        <td class="cap">SWE Marathon 表現突出、Terminal Bench 2.1 領先梯隊；<b>即時聯網／X 平台資訊</b>是招牌。</td>
-        <td class="feat"><b>500K context</b>、文字＋圖片輸入；主打長任務、工具調用、錯誤恢復。</td>
-        <td><span class="badge warn">部分支援</span><span class="bedrock-note">Grok 4.3 已上架（6月），4.5 尚未確認</span></td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
-  <div class="swipe-hint">← 左右滑動看完整欄位 →</div>
-</section>
-
-<!-- ═══════ 中階／高性價比 ═══════ -->
-<section>
-  <div class="tier-head">
-    <h2>中階／高性價比</h2>
-    <span class="price-band">WORKHORSE · 大量 agent 工作負載</span>
-  </div>
-  <div class="table-wrap">
-  <table>
-    <thead><tr>
-      <th>模型</th><th>上市時間</th><th>API 價格</th><th>能力亮點</th><th>功能特色</th><th>Bedrock</th>
-    </tr></thead>
-    <tbody>
-      <tr>
-        <td>
-          <div class="model-name">Claude Sonnet 5</div>
-          <div class="vendor"><span class="dot anthropic"></span>Anthropic</div>
-        </td>
-        <td class="date">2026-06-30</td>
-        <td class="price">
-          <div class="nums">$2 <em>/</em> $10</div>
-          <div class="costbar"><i style="width:20%"></i></div>
-          <div class="note">優惠至 8/31，之後 $3 / $15</div>
-        </td>
-        <td class="cap">SWE-bench Pro <b>63.2%</b>、OSWorld 81.2%、Terminal-Bench 2.1 80.4%——貼近 Opus 4.8。</td>
-        <td class="feat"><b>1M context、128K 輸出</b>、推理強度可選（low–x-high）；注意新 tokenizer 同文本 tokens 可能多 1.0–1.35 倍。</td>
-        <td><span class="badge ok">已支援</span><span class="bedrock-note">6/30 上架</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">GPT-5.6 Terra</div>
-          <div class="vendor"><span class="dot openai"></span>OpenAI</div>
-        </td>
-        <td class="date">2026-07-09</td>
-        <td class="price">
-          <div class="nums">$2.50 <em>/</em> $15</div>
-          <div class="costbar"><i style="width:30%"></i></div>
-          <div class="note">官方稱與 GPT-5.5 同級、成本約砍半</div>
-        </td>
-        <td class="cap">效能與上一代旗艦 GPT-5.5 相當，定位企業批量場景。</td>
-        <td class="feat">GPT-5.6 系列中的均衡款；Microsoft 365 Copilot 首選模型之一。</td>
-        <td><span class="badge ok">已支援</span><span class="bedrock-note">7/20 隨 GPT-5.6 家族 GA 上架</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">Gemini 3.6 Flash</div>
-          <div class="vendor"><span class="dot google"></span>Google</div>
-        </td>
-        <td class="date">2026-07-21</td>
-        <td class="price">
-          <div class="nums">$1.50 <em>/</em> $7.50</div>
-          <div class="costbar"><i style="width:15%"></i></div>
-        </td>
-        <td class="cap">編碼與推理品質<b>接近 Gemini Pro</b>；比 3.5 Flash 省 17% 輸出 tokens。</td>
-        <td class="feat"><b>1M context、64K 輸出</b>、原生多模態（文字／圖片／音訊／影片）；多步驟工作流與 IDE agent 最佳化。</td>
-        <td><span class="badge no">不支援</span><span class="bedrock-note">走 Google Vertex AI</span></td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
-  <div class="swipe-hint">← 左右滑動看完整欄位 →</div>
-</section>
-
-<!-- ═══════ 中國模型 ═══════ -->
-<section>
-  <div class="tier-head">
-    <h2>中國模型</h2>
-    <span class="price-band">CHINA · 開源權重＋極致性價比</span>
-  </div>
-  <div class="table-wrap">
-  <table>
-    <thead><tr>
-      <th>模型</th><th>上市時間</th><th>API 價格</th><th>能力亮點</th><th>功能特色</th><th>Bedrock</th>
-    </tr></thead>
-    <tbody>
-      <tr>
-        <td>
-          <div class="model-name">DeepSeek V4<small style="font-weight:400">-Pro</small></div>
-          <div class="vendor"><span class="dot deepseek"></span>深度求索 · 開源</div>
-        </td>
-        <td class="date">2026-04-24<small>7/20 正式版 GA</small></td>
-        <td class="price">
-          <div class="nums">$0.44 <em>/</em> $0.87</div>
-          <div class="costbar"><i style="width:2%"></i></div>
-          <div class="note">高峰時段（9–12、14–18 時）雙倍計價已公告，截至 7 月底尚未實施。同系列 V4-Flash（284B/13B 激活）約 $0.14 輸入，更便宜</div>
-        </td>
-        <td class="cap">總參數 <b>1.6T</b>（激活 49B）；與 GPT-5.5 同日發布正面對決，性價比重新定義市場。</td>
-        <td class="feat"><b>1M context</b>、Think High / Think Max 兩檔思考模式（reasoning_effort 可調）。舊別名 deepseek-chat / reasoner 已於 7/24 退役。</td>
-        <td><span class="badge warn">部分支援</span><span class="bedrock-note">Bedrock 現有 V3.2 / V3.1 / R1，V4 未上架</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">Kimi K3</div>
-          <div class="vendor"><span class="dot cn-kimi"></span>月之暗面 · 開源</div>
-        </td>
-        <td class="date">2026-07-16<small>開源權重 7/26</small></td>
-        <td class="price">
-          <div class="nums">$3 <em>/</em> $15</div>
-          <div class="costbar"><i style="width:30%"></i></div>
-          <div class="note">快取輸入 $0.30；1M context 全程均一價、不加收長上下文費率</div>
-        </td>
-        <td class="cap">總參數 <b>2.8T</b>（A104B），目前業界總參數量最大的開源模型；主打 Agent 任務。</td>
-        <td class="feat"><b>1M context</b>、MoE 896 專家（每次激活 16 個）、原生視覺理解。權重非 MIT，採專屬「Kimi K3 License」（MAU 超 1 億需另簽約）。</td>
-        <td><span class="badge warn">部分支援</span><span class="bedrock-note">Bedrock 現有 Kimi K2.5，K3 未上架</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">Qwen3.8-Max<small style="font-weight:400">-Preview</small></div>
-          <div class="vendor"><span class="dot cn-qwen"></span>阿里通義 · 閉源旗艦</div>
-        </td>
-        <td class="date">2026-07-19<small>Preview</small></td>
-        <td class="price">
-          <div class="nums">未逐項公布</div>
-          <div class="note">採 Token Plan 訂閱制（Lite $6/月起），非逐項 API 計價</div>
-        </td>
-        <td class="cap"><b>2.4T</b> 參數稀疏 MoE、多模態（文字/圖片/影片/文件）；未公開跑分與模型卡，第三方測試稱編碼優於 K3、GPT-5.6 Sol。通義另以<b>最完整的開源生態</b>著稱（全尺寸覆蓋、1M context 的 Qwen3.6-Plus）。</td>
-        <td class="feat">Agent 任務導向；開源版可透過 Ollama / vLLM 本地部署。</td>
-        <td><span class="badge warn">部分支援</span><span class="bedrock-note">Bedrock 有 Qwen3 開源系列（含 Coder），Max 閉源版無</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">GLM-5.2</div>
-          <div class="vendor"><span class="dot cn-glm"></span>智譜 AI · 開源</div>
-        </td>
-        <td class="date">2026-06</td>
-        <td class="price">
-          <div class="nums">$0.70 <em>/</em> $2.20</div>
-          <div class="costbar"><i style="width:4%"></i></div>
-        </td>
-        <td class="cap">網路安全漏洞檢測 F1 值 <b>39%</b>，該項超越 Claude Code（32%）；程式碼安全是招牌。</td>
-        <td class="feat"><b>1M context</b>、MoE 架構、開源權重。</td>
-        <td><span class="badge warn">部分支援</span><span class="bedrock-note">Bedrock 現有 GLM-5，5.2 未上架</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">混元 Hy-3</div>
-          <div class="vendor"><span class="dot cn-tencent"></span>騰訊 · 開源</div>
-        </td>
-        <td class="date">2026-07-06<small>正式版（4/23 Preview）</small></td>
-        <td class="price">
-          <div class="nums">≈$0.14 <em>/</em> $0.56</div>
-          <div class="costbar"><i style="width:1%"></i></div>
-          <div class="note">原幣人民幣 1 元 / 4 元，按約 7.15 匯率換算</div>
-        </td>
-        <td class="cap">295B 總參數（激活 21B）快慢思考融合 MoE；官方稱 Agent 任務解決率達 90%，以較小規模打平中外旗艦水準。</td>
-        <td class="feat">256K context、Apache 2.0 開源；已上架 OpenRouter／HuggingFace／Modelscope，並整合進騰訊元寶、CodeBuddy、ima。</td>
-        <td><span class="badge no">不支援</span><span class="bedrock-note">已上架海外開源平台，Bedrock 尚未見公告</span></td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
-  <div class="swipe-hint">← 左右滑動看完整欄位 →</div>
-</section>
-
-<!-- ═══════ 輕量入門 ═══════ -->
-<section>
-  <div class="tier-head">
-    <h2>輕量入門</h2>
-    <span class="price-band">LIGHTWEIGHT · 高頻低延遲</span>
-  </div>
-  <div class="table-wrap">
-  <table>
-    <thead><tr>
-      <th>模型</th><th>上市時間</th><th>API 價格</th><th>能力亮點</th><th>功能特色</th><th>Bedrock</th>
-    </tr></thead>
-    <tbody>
-      <tr>
-        <td>
-          <div class="model-name">Claude Haiku 4.5</div>
-          <div class="vendor"><span class="dot anthropic"></span>Anthropic</div>
-        </td>
-        <td class="date">2025-10</td>
-        <td class="price"><div class="nums">$1 <em>/</em> $5</div><div class="costbar"><i style="width:10%"></i></div></td>
-        <td class="cap">Anthropic 最便宜快速的選項。</td>
-        <td class="feat">適合分類、抽取、大量輕任務。</td>
-        <td><span class="badge ok">已支援</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">GPT-5.6 Luna</div>
-          <div class="vendor"><span class="dot openai"></span>OpenAI</div>
-        </td>
-        <td class="date">2026-07-09</td>
-        <td class="price">
-          <div class="nums">$1 <em>/</em> $6</div>
-          <div class="costbar"><i style="width:12%"></i></div>
-        </td>
-        <td class="cap">GPT-5.6 系列最快、最省預算的版本。</td>
-        <td class="feat">低延遲對話與即時問答場景。</td>
-        <td><span class="badge ok">已支援</span><span class="bedrock-note">7/20 隨 GPT-5.6 家族 GA 上架</span></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="model-name">Gemini 3.5 Flash-Lite</div>
-          <div class="vendor"><span class="dot google"></span>Google</div>
-        </td>
-        <td class="date">2026-07-21</td>
-        <td class="price"><div class="nums">未逐項公布</div></td>
-        <td class="cap">Google 官方定位「最快、最省成本」。</td>
-        <td class="feat">輕量 agent 工作流；將陸續整合進 Google 搜尋。</td>
-        <td><span class="badge no">不支援</span></td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
-  <div class="swipe-hint">← 左右滑動看完整欄位 →</div>
-</section>
-
-<!-- ═══════ 每日新聞 ═══════ -->
-<div class="daily-news" id="daily-news">
-  <h3>📰 AI 模型每日新聞</h3>
-  <div class="news-date">2026-07-29 更新</div>
-
-  <h4>🆕 新模型發布</h4>
-  <ul>
-    <li>（預告）<b>Grok 4.6</b>／xAI：Musk 於 7/28 表示約 8/7 推出，1.5T 參數，強化 SFT 與 RL；更大的 Grok 4.7（2.1T 參數）數週後跟進。價格、context 與跑分均未公布（僅 Musk 個人聲明，未確認）。<a href="https://americanbazaaronline.com/2026/07/28/elon-musk-says-grok-4-6-is-weeks-away-grok-4-7-to-follow-soon-485356/">來源</a></li>
-  </ul>
-
-  <h4>💰 價格與排名變動</h4>
-  <ul>
-    <li>Artificial Analysis 榜單重整（v4.1）後，<b>Claude Opus 5</b>（7/24 發布）以智能指數 61 登上總榜第一，領先 Fable 5（60）與 GPT-5.6 Sol（59）；Agentic 指數 55.3 亦居首。<a href="https://artificialanalysis.ai/leaderboards/models">來源</a></li>
-  </ul>
-
-  <h4>☁️ Bedrock 上架動態</h4>
-  <ul>
-    <li class="none">今日無</li>
-  </ul>
-
-  <h4>🇨🇳 中國模型動態（DeepSeek／Kimi／Qwen／GLM／混元）</h4>
-  <ul>
-    <li><b>Kimi K3</b> 開源權重 7/26 釋出後社群熱度延續：Sebastian Raschka 的 K3 架構解析登上 Hacker News 首頁（468 分），聚焦其 2.8T 參數 MoE 設計。<a href="https://news.ycombinator.com">來源</a></li>
-  </ul>
-
-  <h4>📌 其他值得注意</h4>
-  <ul>
-    <li>Anthropic 於 7/27 發表官方立場文〈Our position on open-weights models〉，說明對開源權重模型的態度。<a href="https://www.anthropic.com/news">來源</a></li>
-    <li>Anthropic 與 Cognizant 於 7/27 宣布擴大合作，將 Claude 導入其企業客戶。<a href="https://www.anthropic.com/news">來源</a></li>
-    <li>資安研究揭露可經由 Word 版 Copilot 自我傳播的「文件蠕蟲」（document-borne AI worm），AI 辦公整合的安全風險受關注。<a href="https://news.ycombinator.com">來源</a></li>
-  </ul>
 </div>
 
-<!-- ═══════ 備註 ═══════ -->
-<div class="notes">
-  <h3>Bedrock 與使用備註</h3>
-  <ul>
-    <li>Bedrock 目前涵蓋 <b>18 家供應商</b>：Claude 全系列、OpenAI（GPT-5.5 與 GPT-OSS 開源版）、Meta Llama、Mistral、Qwen3、DeepSeek、GLM、Kimi、MiniMax、Grok 等。</li>
-    <li><b>Claude 上架最即時</b>——Opus 5、Sonnet 5、Fable 5 都是發布當日或同步上架，且 Opus 5 在 AWS 支援零資料保留（ZDR），對合規敏感的企業是關鍵差異。</li>
-    <li>GPT-5.6 家族已於 7/20 全面 GA 上架 Bedrock，上架速度明顯加快；但 Grok 4.5、DeepSeek V4 等剛發布不滿一個月的模型通常仍有數週至數月延遲，部署前請在 Bedrock console 確認實際 model ID 與區域可用性。</li>
-    <li><b>中國模型的共同特徵</b>：幾乎全採 MoE 架構、多數開源權重（MIT / Apache 2.0），並以極低定價競爭；Bedrock 上架的通常是前一代版本（Kimi K2.5、GLM-5、Qwen3、DeepSeek V3.2），最新旗艦（K3、V4、GLM-5.2）需走各家官方 API 或自行部署。</li>
-    <li>各家跑分多出自官方發布資料，測試環境與推理檔位不同，僅供方向參考；實際選型建議以自己的工作負載驗證。</li>
-  </ul>
-</div>
+<section id="flagship" data-screen-label="頂級旗艦" style="background:#000;padding:96px 22px;scroll-margin-top:60px">
+  <div style="max-width:1040px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:52px">
+      <div style="font-size:12px;letter-spacing:0.14em;color:#86868b">FLAGSHIP</div>
+      <h2 style="margin:10px 0 0;font-size:clamp(32px,4.6vw,48px);font-weight:700;letter-spacing:-0.015em;color:#f5f5f7">頂級旗艦</h2>
+      <p style="margin:12px auto 0;font-size:19px;color:#a1a1a6;max-width:560px">追求能力上限的三款模型</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px">
+      <sc-for list="{{ flagship }}" as="item" hint-placeholder-count="3">
+        <article style="background:#161617;border:1px solid #2d2d2f;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="width:9px;height:9px;border-radius:50%;flex:none;background:{{ item.color }}"></span>
+            <span style="font-size:12px;color:#a1a1a6">{{ item.vendor }}</span>
+            <span style="margin-left:auto;font-size:12px;color:#6e6e73;font-variant-numeric:tabular-nums">{{ item.date }}</span>
+          </div>
+          <h3 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.01em;color:#f5f5f7">{{ item.name }}</h3>
+          <div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px">
+            <div style="font-size:26px;font-weight:600;color:#f5f5f7;letter-spacing:-0.01em">{{ item.price }}</div>
+            <div style="font-size:12px;color:#a1a1a6;margin-top:2px">{{ item.priceSub }}</div>
+            <div style="font-size:12px;color:#6e6e73;margin-top:4px;line-height:1.5">{{ item.priceNote }}</div>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px">
+            <div style="font-size:32px;font-weight:700;color:#f5f5f7;letter-spacing:-0.01em;line-height:1.1">{{ item.statBig }}</div>
+            <div style="font-size:12px;color:#a1a1a6;margin-top:4px">{{ item.statLabel }}</div>
+            <p style="margin:10px 0 0;font-size:14px;color:#d2d2d7;line-height:1.55">{{ item.cap }}</p>
+          </div>
+          <p style="margin:0;border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;font-size:14px;color:#a1a1a6;line-height:1.55">{{ item.feat }}</p>
+          <div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;margin-top:auto">
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#f5f5f7"><span style="width:8px;height:8px;border-radius:50%;flex:none;background:{{ item.bdColor }}"></span>Bedrock：{{ item.bdText }}</div>
+            <div style="font-size:12px;color:#6e6e73;margin-top:4px;line-height:1.5">{{ item.bdNote }}</div>
+          </div>
+          <button sc-camel-on-click="{{ item.onAdd }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#2997ff;cursor:pointer">加入比較 +</button>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+</section>
 
-<footer>資料整理日期：2026-07-29 · 價格與支援狀況可能隨時變動</footer>
+<section id="highend" data-screen-label="高階主力" style="background:#fff;padding:96px 22px;scroll-margin-top:60px">
+  <div style="max-width:1040px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:52px">
+      <div style="font-size:12px;letter-spacing:0.14em;color:#6e6e73">HIGH-END</div>
+      <h2 style="margin:10px 0 0;font-size:clamp(32px,4.6vw,48px);font-weight:700;letter-spacing:-0.015em">高階主力</h2>
+      <p style="margin:12px auto 0;font-size:19px;color:#6e6e73;max-width:560px">日常專業工作的甜蜜點</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px">
+      <sc-for list="{{ highend }}" as="item" hint-placeholder-count="4">
+        <article style="background:#f5f5f7;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="width:9px;height:9px;border-radius:50%;flex:none;background:{{ item.color }}"></span>
+            <span style="font-size:12px;color:#6e6e73">{{ item.vendor }}</span>
+            <span style="margin-left:auto;font-size:12px;color:#a1a1a6;font-variant-numeric:tabular-nums">{{ item.date }}</span>
+          </div>
+          <h3 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.01em;color:#1d1d1f">{{ item.name }}</h3>
+          <div style="border-top:1px solid #e0e0e4;padding-top:14px">
+            <div style="font-size:26px;font-weight:600;color:#1d1d1f;letter-spacing:-0.01em">{{ item.price }}</div>
+            <div style="font-size:12px;color:#6e6e73;margin-top:2px">{{ item.priceSub }}</div>
+            <div style="font-size:12px;color:#a1a1a6;margin-top:4px;line-height:1.5">{{ item.priceNote }}</div>
+          </div>
+          <div style="border-top:1px solid #e0e0e4;padding-top:14px">
+            <div style="font-size:32px;font-weight:700;color:#1d1d1f;letter-spacing:-0.01em;line-height:1.1">{{ item.statBig }}</div>
+            <div style="font-size:12px;color:#6e6e73;margin-top:4px">{{ item.statLabel }}</div>
+            <p style="margin:10px 0 0;font-size:14px;color:#494949;line-height:1.55">{{ item.cap }}</p>
+          </div>
+          <p style="margin:0;border-top:1px solid #e0e0e4;padding-top:14px;font-size:14px;color:#6e6e73;line-height:1.55">{{ item.feat }}</p>
+          <div style="border-top:1px solid #e0e0e4;padding-top:14px;margin-top:auto">
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#1d1d1f"><span style="width:8px;height:8px;border-radius:50%;flex:none;background:{{ item.bdColor }}"></span>Bedrock：{{ item.bdText }}</div>
+            <div style="font-size:12px;color:#a1a1a6;margin-top:4px;line-height:1.5">{{ item.bdNote }}</div>
+          </div>
+          <button sc-camel-on-click="{{ item.onAdd }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#0071e3;cursor:pointer">加入比較 +</button>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+</section>
 
-</body>
-</html>
+<section id="workhorse" data-screen-label="中階性價比" style="background:#f5f5f7;padding:96px 22px;scroll-margin-top:60px">
+  <div style="max-width:1040px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:52px">
+      <div style="font-size:12px;letter-spacing:0.14em;color:#6e6e73">WORKHORSE</div>
+      <h2 style="margin:10px 0 0;font-size:clamp(32px,4.6vw,48px);font-weight:700;letter-spacing:-0.015em">中階性價比</h2>
+      <p style="margin:12px auto 0;font-size:19px;color:#6e6e73;max-width:560px">為大量 agent 工作負載而生</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px">
+      <sc-for list="{{ workhorse }}" as="item" hint-placeholder-count="3">
+        <article style="background:#fff;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="width:9px;height:9px;border-radius:50%;flex:none;background:{{ item.color }}"></span>
+            <span style="font-size:12px;color:#6e6e73">{{ item.vendor }}</span>
+            <span style="margin-left:auto;font-size:12px;color:#a1a1a6;font-variant-numeric:tabular-nums">{{ item.date }}</span>
+          </div>
+          <h3 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.01em;color:#1d1d1f">{{ item.name }}</h3>
+          <div style="border-top:1px solid #e8e8ed;padding-top:14px">
+            <div style="font-size:26px;font-weight:600;color:#1d1d1f;letter-spacing:-0.01em">{{ item.price }}</div>
+            <div style="font-size:12px;color:#6e6e73;margin-top:2px">{{ item.priceSub }}</div>
+            <div style="font-size:12px;color:#a1a1a6;margin-top:4px;line-height:1.5">{{ item.priceNote }}</div>
+          </div>
+          <div style="border-top:1px solid #e8e8ed;padding-top:14px">
+            <div style="font-size:32px;font-weight:700;color:#1d1d1f;letter-spacing:-0.01em;line-height:1.1">{{ item.statBig }}</div>
+            <div style="font-size:12px;color:#6e6e73;margin-top:4px">{{ item.statLabel }}</div>
+            <p style="margin:10px 0 0;font-size:14px;color:#494949;line-height:1.55">{{ item.cap }}</p>
+          </div>
+          <p style="margin:0;border-top:1px solid #e8e8ed;padding-top:14px;font-size:14px;color:#6e6e73;line-height:1.55">{{ item.feat }}</p>
+          <div style="border-top:1px solid #e8e8ed;padding-top:14px;margin-top:auto">
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#1d1d1f"><span style="width:8px;height:8px;border-radius:50%;flex:none;background:{{ item.bdColor }}"></span>Bedrock：{{ item.bdText }}</div>
+            <div style="font-size:12px;color:#a1a1a6;margin-top:4px;line-height:1.5">{{ item.bdNote }}</div>
+          </div>
+          <button sc-camel-on-click="{{ item.onAdd }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#0071e3;cursor:pointer">加入比較 +</button>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="china" data-screen-label="中國模型" style="background:#000;padding:96px 22px;scroll-margin-top:60px">
+  <div style="max-width:1040px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:52px">
+      <div style="font-size:12px;letter-spacing:0.14em;color:#86868b">CHINA</div>
+      <h2 style="margin:10px 0 0;font-size:clamp(32px,4.6vw,48px);font-weight:700;letter-spacing:-0.015em;color:#f5f5f7">中國模型</h2>
+      <p style="margin:12px auto 0;font-size:19px;color:#a1a1a6;max-width:560px">開源權重、MoE 架構，以極低定價競爭</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px">
+      <sc-for list="{{ china }}" as="item" hint-placeholder-count="5">
+        <article style="background:#161617;border:1px solid #2d2d2f;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="width:9px;height:9px;border-radius:50%;flex:none;background:{{ item.color }}"></span>
+            <span style="font-size:12px;color:#a1a1a6">{{ item.vendor }}</span>
+            <span style="margin-left:auto;font-size:12px;color:#6e6e73;font-variant-numeric:tabular-nums">{{ item.date }}</span>
+          </div>
+          <h3 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.01em;color:#f5f5f7">{{ item.name }}</h3>
+          <div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px">
+            <div style="font-size:26px;font-weight:600;color:#f5f5f7;letter-spacing:-0.01em">{{ item.price }}</div>
+            <div style="font-size:12px;color:#a1a1a6;margin-top:2px">{{ item.priceSub }}</div>
+            <div style="font-size:12px;color:#6e6e73;margin-top:4px;line-height:1.5">{{ item.priceNote }}</div>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px">
+            <div style="font-size:32px;font-weight:700;color:#f5f5f7;letter-spacing:-0.01em;line-height:1.1">{{ item.statBig }}</div>
+            <div style="font-size:12px;color:#a1a1a6;margin-top:4px">{{ item.statLabel }}</div>
+            <p style="margin:10px 0 0;font-size:14px;color:#d2d2d7;line-height:1.55">{{ item.cap }}</p>
+          </div>
+          <p style="margin:0;border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;font-size:14px;color:#a1a1a6;line-height:1.55">{{ item.feat }}</p>
+          <div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;margin-top:auto">
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#f5f5f7"><span style="width:8px;height:8px;border-radius:50%;flex:none;background:{{ item.bdColor }}"></span>Bedrock：{{ item.bdText }}</div>
+            <div style="font-size:12px;color:#6e6e73;margin-top:4px;line-height:1.5">{{ item.bdNote }}</div>
+          </div>
+          <button sc-camel-on-click="{{ item.onAdd }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#2997ff;cursor:pointer">加入比較 +</button>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="light" data-screen-label="輕量入門" style="background:#fff;padding:96px 22px;scroll-margin-top:60px">
+  <div style="max-width:1040px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:52px">
+      <div style="font-size:12px;letter-spacing:0.14em;color:#6e6e73">LIGHTWEIGHT</div>
+      <h2 style="margin:10px 0 0;font-size:clamp(32px,4.6vw,48px);font-weight:700;letter-spacing:-0.015em">輕量入門</h2>
+      <p style="margin:12px auto 0;font-size:19px;color:#6e6e73;max-width:560px">高頻、低延遲場景的選擇</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px">
+      <sc-for list="{{ light }}" as="item" hint-placeholder-count="3">
+        <article style="background:#f5f5f7;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="width:9px;height:9px;border-radius:50%;flex:none;background:{{ item.color }}"></span>
+            <span style="font-size:12px;color:#6e6e73">{{ item.vendor }}</span>
+            <span style="margin-left:auto;font-size:12px;color:#a1a1a6;font-variant-numeric:tabular-nums">{{ item.date }}</span>
+          </div>
+          <h3 style="margin:0;font-size:24px;font-weight:700;letter-spacing:-0.01em;color:#1d1d1f">{{ item.name }}</h3>
+          <div style="border-top:1px solid #e0e0e4;padding-top:14px">
+            <div style="font-size:26px;font-weight:600;color:#1d1d1f;letter-spacing:-0.01em">{{ item.price }}</div>
+            <div style="font-size:12px;color:#6e6e73;margin-top:2px">{{ item.priceSub }}</div>
+            <div style="font-size:12px;color:#a1a1a6;margin-top:4px;line-height:1.5">{{ item.priceNote }}</div>
+          </div>
+          <div style="border-top:1px solid #e0e0e4;padding-top:14px">
+            <div style="font-size:32px;font-weight:700;color:#1d1d1f;letter-spacing:-0.01em;line-height:1.1">{{ item.statBig }}</div>
+            <div style="font-size:12px;color:#6e6e73;margin-top:4px">{{ item.statLabel }}</div>
+            <p style="margin:10px 0 0;font-size:14px;color:#494949;line-height:1.55">{{ item.cap }}</p>
+          </div>
+          <p style="margin:0;border-top:1px solid #e0e0e4;padding-top:14px;font-size:14px;color:#6e6e73;line-height:1.55">{{ item.feat }}</p>
+          <div style="border-top:1px solid #e0e0e4;padding-top:14px;margin-top:auto">
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#1d1d1f"><span style="width:8px;height:8px;border-radius:50%;flex:none;background:{{ item.bdColor }}"></span>Bedrock：{{ item.bdText }}</div>
+            <div style="font-size:12px;color:#a1a1a6;margin-top:4px;line-height:1.5">{{ item.bdNote }}</div>
+          </div>
+          <button sc-camel-on-click="{{ item.onAdd }}" style="align-self:flex-start;background:none;border:none;padding:0;font-size:14px;color:#0071e3;cursor:pointer">加入比較 +</button>
+        </article>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="compare" data-screen-label="比較器" style="background:#f5f5f7;padding:96px 22px;scroll-margin-top:60px">
+  <div style="max-width:1040px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:52px">
+      <div style="font-size:12px;letter-spacing:0.14em;color:#6e6e73">COMPARE</div>
+      <h2 style="margin:10px 0 0;font-size:clamp(32px,4.6vw,48px);font-weight:700;letter-spacing:-0.015em">並排比較</h2>
+      <p style="margin:12px auto 0;font-size:19px;color:#6e6e73;max-width:560px">在卡片上按「加入比較」，或直接在下拉選單切換</p>
+    </div>
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px">
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(250px,1fr));gap:20px;min-width:790px">
+        <sc-for list="{{ compareCols }}" as="col" hint-placeholder-count="3">
+          <div style="background:#fff;border-radius:20px;padding:26px;display:flex;flex-direction:column">
+            <sc-raw-select value="{{ col.selectedId }}" sc-camel-on-change="{{ col.onPick }}" style="width:100%;padding:10px 14px;border-radius:12px;border:1px solid #d2d2d7;background:#fff;color:#1d1d1f;font-size:15px;font-weight:600;cursor:pointer;appearance:auto">{{ col.optionEls }}</sc-raw-select>
+            <div style="display:flex;align-items:center;gap:8px;margin:18px 0 4px">
+              <span style="width:9px;height:9px;border-radius:50%;flex:none;background:{{ col.color }}"></span>
+              <span style="font-size:12px;color:#6e6e73">{{ col.vendor }}</span>
+            </div>
+            <h3 style="margin:0 0 14px;font-size:22px;font-weight:700;letter-spacing:-0.01em">{{ col.name }}</h3>
+            <div style="border-top:1px solid #e8e8ed;padding:13px 0">
+              <div style="font-size:11px;letter-spacing:0.08em;color:#a1a1a6;margin-bottom:3px">上市時間</div>
+              <div style="font-size:14px;font-variant-numeric:tabular-nums">{{ col.date }}</div>
+            </div>
+            <div style="border-top:1px solid #e8e8ed;padding:13px 0">
+              <div style="font-size:11px;letter-spacing:0.08em;color:#a1a1a6;margin-bottom:3px">API 價格</div>
+              <div style="font-size:20px;font-weight:600">{{ col.price }}</div>
+              <div style="font-size:12px;color:#6e6e73;margin-top:3px;line-height:1.5">{{ col.priceNote }}</div>
+            </div>
+            <div style="border-top:1px solid #e8e8ed;padding:13px 0">
+              <div style="font-size:11px;letter-spacing:0.08em;color:#a1a1a6;margin-bottom:3px">關鍵數字</div>
+              <div style="font-size:26px;font-weight:700;line-height:1.1">{{ col.statBig }}</div>
+              <div style="font-size:12px;color:#6e6e73;margin-top:3px">{{ col.statLabel }}</div>
+            </div>
+            <div style="border-top:1px solid #e8e8ed;padding:13px 0">
+              <div style="font-size:11px;letter-spacing:0.08em;color:#a1a1a6;margin-bottom:3px">能力亮點</div>
+              <div style="font-size:14px;color:#494949;line-height:1.55">{{ col.cap }}</div>
+            </div>
+            <div style="border-top:1px solid #e8e8ed;padding:13px 0">
+              <div style="font-size:11px;letter-spacing:0.08em;color:#a1a1a6;margin-bottom:3px">功能特色</div>
+              <div style="font-size:14px;color:#494949;line-height:1.55">{{ col.feat }}</div>
+            </div>
+            <div style="border-top:1px solid #e8e8ed;padding:13px 0 0;margin-top:auto">
+              <div style="font-size:11px;letter-spacing:0.08em;color:#a1a1a6;margin-bottom:3px">AMAZON BEDROCK</div>
+              <div style="display:flex;align-items:center;gap:7px;font-size:14px"><span style="width:8px;height:8px;border-radius:50%;flex:none;background:{{ col.bdColor }}"></span>{{ col.bdText }}</div>
+              <div style="font-size:12px;color:#a1a1a6;margin-top:3px;line-height:1.5">{{ col.bdNote }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="news" data-screen-label="每日新聞" style="background:#fff;padding:96px 22px;scroll-margin-top:60px">
+  <div style="max-width:860px;margin:0 auto">
+    <div style="margin-bottom:36px">
+      <div style="font-size:12px;letter-spacing:0.14em;color:#6e6e73">DAILY</div>
+      <h2 style="margin:10px 0 0;font-size:clamp(26px,3.6vw,36px);font-weight:700;letter-spacing:-0.015em">AI 模型每日新聞</h2>
+      <p style="margin:10px 0 0;font-size:15px;color:#6e6e73">2026-07-29 更新</p>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <div style="display:grid;grid-template-columns:130px 1fr;gap:18px;padding:20px 0;border-top:1px solid #e8e8ed">
+        <div style="font-size:12px;letter-spacing:0.06em;color:#6e6e73;padding-top:3px">新模型發布</div>
+        <p style="margin:0;font-size:15px;color:#1d1d1f;line-height:1.65">（預告）<b>Grok 4.6</b>／xAI：Musk 於 7/28 表示約 8/7 推出，1.5T 參數，強化 SFT 與 RL；更大的 Grok 4.7（2.1T 參數）數週後跟進。價格、context 與跑分均未公布（僅 Musk 個人聲明，未確認）。<a href="https://americanbazaaronline.com/2026/07/28/elon-musk-says-grok-4-6-is-weeks-away-grok-4-7-to-follow-soon-485356/" target="_blank" rel="noopener">來源</a></p>
+      </div>
+      <div style="display:grid;grid-template-columns:130px 1fr;gap:18px;padding:20px 0;border-top:1px solid #e8e8ed">
+        <div style="font-size:12px;letter-spacing:0.06em;color:#6e6e73;padding-top:3px">價格與排名變動</div>
+        <p style="margin:0;font-size:15px;color:#1d1d1f;line-height:1.65">Artificial Analysis 榜單重整（v4.1）後，<b>Claude Opus 5</b>（7/24 發布）以智能指數 61 登上總榜第一，領先 Fable 5（60）與 GPT-5.6 Sol（59）；Agentic 指數 55.3 亦居首。<a href="https://artificialanalysis.ai/leaderboards/models" target="_blank" rel="noopener">來源</a></p>
+      </div>
+      <div style="display:grid;grid-template-columns:130px 1fr;gap:18px;padding:20px 0;border-top:1px solid #e8e8ed">
+        <div style="font-size:12px;letter-spacing:0.06em;color:#6e6e73;padding-top:3px">Bedrock 上架動態</div>
+        <p style="margin:0;font-size:15px;color:#a1a1a6;line-height:1.65">今日無。</p>
+      </div>
+      <div style="display:grid;grid-template-columns:130px 1fr;gap:18px;padding:20px 0;border-top:1px solid #e8e8ed">
+        <div style="font-size:12px;letter-spacing:0.06em;color:#6e6e73;padding-top:3px">中國模型動態</div>
+        <p style="margin:0;font-size:15px;color:#1d1d1f;line-height:1.65"><b>Kimi K3</b> 開源權重 7/26 釋出後社群熱度延續：Sebastian Raschka 的 K3 架構解析登上 Hacker News 首頁（468 分），聚焦其 2.8T 參數 MoE 設計。<a href="https://news.ycombinator.com" target="_blank" rel="noopener">來源</a></p>
+      </div>
+      <div style="display:grid;grid-template-columns:130px 1fr;gap:18px;padding:20px 0;border-top:1px solid #e8e8ed">
+        <div style="font-size:12px;letter-spacing:0.06em;color:#6e6e73;padding-top:3px">其他值得注意</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <p style="margin:0;font-size:15px;color:#1d1d1f;line-height:1.65">Anthropic 於 7/27 發表官方立場文〈Our position on open-weights models〉，說明對開源權重模型的態度。<a href="https://www.anthropic.com/news" target="_blank" rel="noopener">來源</a></p>
+          <p style="margin:0;font-size:15px;color:#1d1d1f;line-height:1.65">Anthropic 與 Cognizant 於 7/27 宣布擴大合作，將 Claude 導入其企業客戶。<a href="https://www.anthropic.com/news" target="_blank" rel="noopener">來源</a></p>
+          <p style="margin:0;font-size:15px;color:#1d1d1f;line-height:1.65">資安研究揭露可經由 Word 版 Copilot 自我傳播的「文件蠕蟲」（document-borne AI worm），AI 辦公整合的安全風險受關注。<a href="https://news.ycombinator.com" target="_blank" rel="noopener">來源</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="notes" data-screen-label="備註" style="background:#f5f5f7;padding:96px 0;scroll-margin-top:60px;overflow:hidden">
+  <div style="max-width:1040px;margin:0 auto;padding:0 22px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:34px">
+    <h2 style="margin:0;font-size:clamp(26px,3.6vw,36px);font-weight:700;letter-spacing:-0.015em">Bedrock 與使用備註</h2>
+    <div style="display:flex;gap:10px">
+      <button sc-camel-on-click="{{ notesPrev }}" aria-label="上一張" style="width:36px;height:36px;border-radius:50%;border:none;background:#e8e8ed;color:#1d1d1f;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">‹</button>
+      <button sc-camel-on-click="{{ notesNext }}" aria-label="下一張" style="width:36px;height:36px;border-radius:50%;border:none;background:#e8e8ed;color:#1d1d1f;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">›</button>
+    </div>
+  </div>
+  <div ref="{{ notesRef }}" style="display:flex;gap:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;padding:0 max(22px,calc((100vw - 1040px) / 2 + 22px)) 12px;scrollbar-width:none">
+    <div style="flex:0 0 340px;scroll-snap-align:start;background:#fff;border-radius:20px;padding:30px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:12px;letter-spacing:0.1em;color:#6e6e73">涵蓋範圍</div>
+      <h3 style="margin:0;font-size:21px;font-weight:700;letter-spacing:-0.01em">18 家供應商</h3>
+      <p style="margin:0;font-size:14px;color:#494949;line-height:1.65">Claude 全系列、OpenAI（GPT-5.5 與 GPT-OSS 開源版）、Meta Llama、Mistral、Qwen3、DeepSeek、GLM、Kimi、MiniMax、Grok 等。</p>
+    </div>
+    <div style="flex:0 0 340px;scroll-snap-align:start;background:#fff;border-radius:20px;padding:30px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:12px;letter-spacing:0.1em;color:#6e6e73">上架速度</div>
+      <h3 style="margin:0;font-size:21px;font-weight:700;letter-spacing:-0.01em">Claude 最即時</h3>
+      <p style="margin:0;font-size:14px;color:#494949;line-height:1.65">Opus 5、Sonnet 5、Fable 5 都是發布當日或同步上架；Opus 5 在 AWS 支援零資料保留（ZDR），對合規敏感的企業是關鍵差異。</p>
+    </div>
+    <div style="flex:0 0 340px;scroll-snap-align:start;background:#fff;border-radius:20px;padding:30px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:12px;letter-spacing:0.1em;color:#6e6e73">新模型</div>
+      <h3 style="margin:0;font-size:21px;font-weight:700;letter-spacing:-0.01em">新模型上架有延遲</h3>
+      <p style="margin:0;font-size:14px;color:#494949;line-height:1.65">GPT-5.6 家族已於 7/20 全面 GA 上架，速度明顯加快；但 Grok 4.5、DeepSeek V4 等剛發布模型仍有數週至數月延遲，部署前請在 Bedrock console 確認實際 model ID 與區域可用性。</p>
+    </div>
+    <div style="flex:0 0 340px;scroll-snap-align:start;background:#fff;border-radius:20px;padding:30px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:12px;letter-spacing:0.1em;color:#6e6e73">中國模型</div>
+      <h3 style="margin:0;font-size:21px;font-weight:700;letter-spacing:-0.01em">開源、MoE、極低價</h3>
+      <p style="margin:0;font-size:14px;color:#494949;line-height:1.65">多數開源權重，以極低定價競爭；Bedrock 上架的通常是前一代版本（Kimi K2.5、GLM-5、Qwen3、DeepSeek V3.2），最新旗艦（K3、V4、GLM-5.2）需走官方 API 或自行部署。</p>
+    </div>
+    <div style="flex:0 0 340px;scroll-snap-align:start;background:#fff;border-radius:20px;padding:30px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:12px;letter-spacing:0.1em;color:#6e6e73">跑分</div>
+      <h3 style="margin:0;font-size:21px;font-weight:700;letter-spacing:-0.01em">跑分僅供方向參考</h3>
+      <p style="margin:0;font-size:14px;color:#494949;line-height:1.65">各家跑分多出自官方發布資料，測試環境與推理檔位不同；實際選型建議以自己的工作負載驗證。</p>
+    </div>
+  </div>
+</section>
+
+<footer style="background:#f5f5f7;padding:34px 22px;border-top:1px solid #e8e8ed">
+  <div style="max-width:1040px;margin:0 auto;font-size:12px;color:#6e6e73">資料整理日期：2026-07-29 · 價格與支援狀況可能隨時變動</div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;showCharts&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;內容&quot;},&quot;bedrockOnly&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;篩選預設&quot;},&quot;defaultSort&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;預設&quot;,&quot;輸出價低到高&quot;,&quot;最新上市&quot;],&quot;default&quot;:&quot;預設&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;篩選預設&quot;}}">
+class Component extends DCLogic {
+  state = { vendor: 'all', bedrockOnly: null, sort: null, compare: ['fable5', 'sol', 'sonnet5'] };
+
+  get data() {
+    const BD = { ok: ['#2f9e5b', '已支援'], warn: ['#c07a16', '部分支援'], no: ['#c24d4d', '不支援'], unknown: ['#8e8e93', '尚未確認'] };
+    const m = (o) => Object.assign({ priceSub: '每百萬 tokens・輸入 / 輸出', priceNote: '', bdNote: '', cap: '', dateSort: 0, priceOut: null }, o, { bdColor: BD[o.bd][0], bdText: BD[o.bd][1] });
+    return [
+      m({ id: 'fable5', tier: 'flagship', group: 'anthropic', name: 'Claude Fable 5', vendor: 'Anthropic · Mythos 級', color: '#B0562F', date: '2026-06-09', dateSort: 20260609, price: '$10 / $50', priceOut: 50, priceNote: '30 天資料保留要求', statBig: '80.3%', statLabel: 'SWE-bench Pro', cap: 'FrontierCode Diamond 29.3%。長時程自主任務目前最強。', feat: '1M context。可跨多日自主運作、規劃階段、委派子代理並自我驗證。', bd: 'ok', bdNote: '6/9 上架；7/1 起加強護欄後重新開放' }),
+      m({ id: 'sol', tier: 'flagship', group: 'openai', name: 'GPT-5.6 Sol', vendor: 'OpenAI · 旗艦', color: '#0F7B6C', date: '2026-07-09', dateSort: 20260709, price: '$5 / $30', priceOut: 30, statBig: '80', statLabel: 'AA 編碼代理指數', cap: '高 Fable 5 約 2.8 分、tokens 用量不到一半；Agents\u2019 Last Exam 53.6。', feat: 'ultra 多代理模式可平行協調多個代理；主打 token 效率（官方稱編碼省 54%）。', bd: 'ok', bdNote: '7/20 GA 上架 Bedrock（Sol/Terra/Luna 同步）' }),
+      m({ id: 'gem35pro', tier: 'flagship', group: 'google', name: 'Gemini 3.5 Pro', vendor: 'Google · 旗艦', color: '#2A5BD7', date: '未發布 · 測試中', dateSort: 0, price: '—', priceSub: '尚未公布定價', statBig: '兩度跳票', statLabel: '原定 6 月、7/17', cap: '傳因幻覺率與可靠性未達標，DeepMind 重建底層架構；截至 7 月底僅少數企業合作夥伴測試中，未有公開時間表。', feat: '傳聞強化影片理解與前端／視覺程式碼生成。', bd: 'no', bdNote: 'Gemini 系列走 Vertex AI' }),
+      m({ id: 'opus5', tier: 'highend', group: 'anthropic', name: 'Claude Opus 5', vendor: 'Anthropic', color: '#B0562F', date: '2026-07-24', dateSort: 20260724, price: '$5 / $25', priceOut: 25, priceNote: 'Fast 模式為 2 倍價、約 2.5 倍速', statBig: '43.3%', statLabel: 'Frontier-Bench（Fable 5 為 33.7%）', cap: 'OSWorld 2.0 以約 1/3 成本超越 Fable 5 最佳成績；Artificial Analysis 智能指數 61 現居總榜第一。', feat: '1M context、128K 輸出、思考預設開啟、effort 可調到 max、支援零資料保留（ZDR）、官方稱最對齊模型。', bd: 'ok', bdNote: '7/24 發布當日上架' }),
+      m({ id: 'opus48', tier: 'highend', group: 'anthropic', name: 'Claude Opus 4.8', vendor: 'Anthropic', color: '#B0562F', date: '2026-05-28', dateSort: 20260528, price: '$5 / $25', priceOut: 25, statBig: '69.2%', statLabel: 'SWE-bench Pro', cap: '上一代主力，複雜推理與代理編碼仍屬第一梯隊。', feat: '1M context、ZDR。適合尚未遷移到 Opus 5 的既有工作流。', bd: 'ok' }),
+      m({ id: 'gpt55', tier: 'highend', group: 'openai', name: 'GPT-5.5', vendor: 'OpenAI', color: '#0F7B6C', date: '2026-04', dateSort: 20260401, price: '約 $5 輸入', priceSub: '每百萬 tokens', priceNote: '輸出價未逐項核實；超過 272K 輸入以 2 倍計價', statBig: '82.7%', statLabel: 'Terminal-Bench 2.0', cap: 'SWE-bench Pro 58.6%。代理式編碼強項。', feat: 'reasoning effort 五檔（none–xhigh）；深度整合 Codex。', bd: 'ok', bdNote: '4/28 起全家族上架' }),
+      m({ id: 'grok45', tier: 'highend', group: 'xai', name: 'Grok 4.5', vendor: 'xAI', color: '#30343B', date: '2026-07-08', dateSort: 20260708, price: '$2 / $6', priceOut: 6, priceNote: '快取輸入 $0.50；≥200K tokens 提示全費率加倍', statBig: '500K', statLabel: 'context・即時聯網／X 平台資訊', cap: 'SWE Marathon 表現突出、Terminal Bench 2.1 領先梯隊。', feat: '文字＋圖片輸入；主打長任務、工具調用、錯誤恢復。', bd: 'warn', bdNote: 'Grok 4.3 已上架（6月），4.5 尚未確認' }),
+      m({ id: 'sonnet5', tier: 'workhorse', group: 'anthropic', name: 'Claude Sonnet 5', vendor: 'Anthropic', color: '#B0562F', date: '2026-06-30', dateSort: 20260630, price: '$2 / $10', priceOut: 10, priceNote: '優惠至 8/31，之後 $3 / $15', statBig: '63.2%', statLabel: 'SWE-bench Pro', cap: 'OSWorld 81.2%、Terminal-Bench 2.1 80.4%——貼近 Opus 4.8。', feat: '1M context、128K 輸出、推理強度可選（low–x-high）；新 tokenizer 同文本 tokens 可能多 1.0–1.35 倍。', bd: 'ok', bdNote: '6/30 上架' }),
+      m({ id: 'terra', tier: 'workhorse', group: 'openai', name: 'GPT-5.6 Terra', vendor: 'OpenAI', color: '#0F7B6C', date: '2026-07-09', dateSort: 20260709, price: '$2.50 / $15', priceOut: 15, priceNote: '官方稱與 GPT-5.5 同級、成本約砍半', statBig: '≈½ 成本', statLabel: '效能與 GPT-5.5 相當', cap: '定位企業批量場景。', feat: 'GPT-5.6 系列中的均衡款；Microsoft 365 Copilot 首選模型之一。', bd: 'ok', bdNote: '7/20 隨 GPT-5.6 家族 GA 上架' }),
+      m({ id: 'flash36', tier: 'workhorse', group: 'google', name: 'Gemini 3.6 Flash', vendor: 'Google', color: '#2A5BD7', date: '2026-07-21', dateSort: 20260721, price: '$1.50 / $7.50', priceOut: 7.5, statBig: '接近 Pro', statLabel: '編碼與推理品質', cap: '比 3.5 Flash 省 17% 輸出 tokens。', feat: '1M context、64K 輸出、原生多模態（文字／圖片／音訊／影片）；多步驟工作流與 IDE agent 最佳化。', bd: 'no', bdNote: '走 Google Vertex AI' }),
+      m({ id: 'dsv4', tier: 'china', group: 'china', name: 'DeepSeek V4-Pro', vendor: '深度求索 · 開源', color: '#4B3FBF', date: '2026-04-24 · 7/20 GA', dateSort: 20260424, price: '$0.44 / $0.87', priceOut: 0.87, priceNote: '高峰時段雙倍計價已公告、尚未實施；同系列 V4-Flash 約 $0.14 輸入更便宜', statBig: '1.6T', statLabel: '總參數（激活 49B）', cap: '與 GPT-5.5 同日發布正面對決，性價比重新定義市場。', feat: '1M context、Think High / Think Max 兩檔思考模式；舊別名 deepseek-chat / reasoner 已於 7/24 退役。', bd: 'warn', bdNote: 'Bedrock 現有 V3.2 / V3.1 / R1，V4 未上架' }),
+      m({ id: 'kimik3', tier: 'china', group: 'china', name: 'Kimi K3', vendor: '月之暗面 · 開源', color: '#111111', date: '2026-07-16 · 權重 7/26 釋出', dateSort: 20260716, price: '$3 / $15', priceOut: 15, priceNote: '快取輸入 $0.30；1M context 全程均一價、不加收長上下文費率', statBig: '2.8T', statLabel: '總參數（A104B）・最大開源模型', cap: '主打 Agent 任務。', feat: '1M context、MoE 896 專家（每次激活 16 個）、原生視覺理解；權重非 MIT，採 Kimi K3 License（MAU 超 1 億需另簽約）。', bd: 'warn', bdNote: 'Bedrock 現有 Kimi K2.5，K3 未上架' }),
+      m({ id: 'qwen38', tier: 'china', group: 'china', name: 'Qwen3.8-Max Preview', vendor: '阿里通義 · 閉源旗艦', color: '#6236FF', date: '2026-07-19 · Preview', dateSort: 20260719, price: '未逐項公布', priceSub: '', priceNote: '採 Token Plan 訂閱制（Lite $6/月起），非逐項 API 計價', statBig: '2.4T', statLabel: '參數稀疏 MoE・多模態（文字/圖片/影片/文件）', cap: '未公開跑分與模型卡；第三方測試稱編碼優於 K3、GPT-5.6 Sol。另以最完整的開源生態著稱（1M context 的 Qwen3.6-Plus）。', feat: '開源版可透過 Ollama / vLLM 本地部署。', bd: 'warn', bdNote: 'Bedrock 有 Qwen3 開源系列（含 Coder），Max 閉源版無' }),
+      m({ id: 'glm52', tier: 'china', group: 'china', name: 'GLM-5.2', vendor: '智譜 AI · 開源', color: '#1F6FEB', date: '2026-06', dateSort: 20260601, price: '$0.70 / $2.20', priceOut: 2.2, statBig: '39%', statLabel: '漏洞檢測 F1（Claude Code 為 32%）', cap: '程式碼安全是招牌。', feat: '1M context、MoE 架構、開源權重。', bd: 'warn', bdNote: 'Bedrock 現有 GLM-5，5.2 未上架' }),
+      m({ id: 'hy3', tier: 'china', group: 'china', name: '混元 Hy-3', vendor: '騰訊 · 開源', color: '#0A6CFF', date: '2026-07-06 正式版 · 4/23 Preview', dateSort: 20260706, price: '≈$0.14 / $0.56', priceOut: 0.56, priceNote: '原幣人民幣 1 元 / 4 元，按約 7.15 匯率換算', statBig: '90%', statLabel: 'Agent 任務解決率（官方）', cap: '295B 總參數（激活 21B）快慢思考融合 MoE，以較小規模打平中外旗艦水準。', feat: '256K context、Apache 2.0 開源；已上架 OpenRouter／HuggingFace／Modelscope，並整合騰訊元寶、CodeBuddy、ima。', bd: 'no', bdNote: '已上架海外開源平台，Bedrock 尚未見公告' }),
+      m({ id: 'haiku45', tier: 'light', group: 'anthropic', name: 'Claude Haiku 4.5', vendor: 'Anthropic', color: '#B0562F', date: '2025-10', dateSort: 20251001, price: '$1 / $5', priceOut: 5, statBig: '最快最省', statLabel: 'Anthropic 入門選項', feat: '適合分類、抽取、大量輕任務。', bd: 'ok' }),
+      m({ id: 'luna', tier: 'light', group: 'openai', name: 'GPT-5.6 Luna', vendor: 'OpenAI', color: '#0F7B6C', date: '2026-07-09', dateSort: 20260709, price: '$1 / $6', priceOut: 6, statBig: '最快', statLabel: 'GPT-5.6 系列最省預算', feat: '低延遲對話與即時問答場景。', bd: 'ok', bdNote: '7/20 隨 GPT-5.6 家族 GA 上架' }),
+      m({ id: 'flashlite', tier: 'light', group: 'google', name: 'Gemini 3.5 Flash-Lite', vendor: 'Google', color: '#2A5BD7', date: '2026-07-21', dateSort: 20260721, price: '未逐項公布', priceSub: '', statBig: '最省成本', statLabel: 'Google 官方定位', feat: '輕量 agent 工作流；將陸續整合進 Google 搜尋。', bd: 'no' })
+    ];
+  }
+
+  addCompare(id) {
+    const c = [...this.state.compare];
+    if (c.includes(id)) return;
+    c.shift(); c.push(id);
+    this.setState({ compare: c });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const data = this.data;
+    const sortKey = s.sort ?? ({ '輸出價低到高': 'price', '最新上市': 'date' }[this.props.defaultSort] || 'default');
+    const bedrockOnly = s.bedrockOnly ?? (this.props.bedrockOnly ?? false);
+    const tier = (t) => {
+      let list = data.filter(x => x.tier === t);
+      if (s.vendor !== 'all') list = list.filter(x => x.group === s.vendor);
+      if (bedrockOnly) list = list.filter(x => x.bd === 'ok');
+      if (sortKey === 'price') list = [...list].sort((a, b) => (a.priceOut ?? 1e9) - (b.priceOut ?? 1e9));
+      if (sortKey === 'date') list = [...list].sort((a, b) => b.dateSort - a.dateSort);
+      return list.map(x => Object.assign({}, x, { onAdd: () => this.addCompare(x.id) }));
+    };
+    const chip = (key, label) => ({ key, label, bg: s.vendor === key ? '#1d1d1f' : 'transparent', fg: s.vendor === key ? '#ffffff' : '#1d1d1f', onClick: () => this.setState({ vendor: key }) });
+    const optionEls = data.map(d => React.createElement('option', { key: d.id, value: d.id }, d.name));
+    const compareCols = s.compare.map((id, i) => {
+      const x = data.find(d => d.id === id) || data[0];
+      return Object.assign({}, x, {
+        selectedId: x.id, optionEls,
+        onPick: (e) => { const c = [...this.state.compare]; c[i] = e.target.value; this.setState({ compare: c }); }
+      });
+    });
+    return {
+      flagship: tier('flagship'), highend: tier('highend'), workhorse: tier('workhorse'), china: tier('china'), light: tier('light'),
+      vendorChips: [chip('all', '全部'), chip('anthropic', 'Anthropic'), chip('openai', 'OpenAI'), chip('google', 'Google'), chip('xai', 'xAI'), chip('china', '中國模型')],
+      bdChip: { label: '只看 Bedrock 已支援', bg: bedrockOnly ? '#1d1d1f' : 'transparent', fg: bedrockOnly ? '#ffffff' : '#1d1d1f', onClick: () => this.setState({ bedrockOnly: !bedrockOnly }) },
+      sortVal: sortKey, onSort: (e) => this.setState({ sort: e.target.value }),
+      compareCols,
+      showCharts: this.props.showCharts ?? true,
+      notesRef: (this.notesRef = this.notesRef || React.createRef()),
+      notesPrev: () => { const el = this.notesRef && this.notesRef.current; if (el) el.scrollBy({ left: -360, behavior: 'smooth' }); },
+      notesNext: () => { const el = this.notesRef && this.notesRef.current; if (el) el.scrollBy({ left: 360, behavior: 'smooth' }); }
+    };
+  }
+}
+</script>
+
+
+
+</body></html>
