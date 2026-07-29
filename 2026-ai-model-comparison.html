@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 主流 AI 模型比較表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDF0F3;
+    --surface:#FFFFFF;
+    --ink:#182230;
+    --ink-soft:#5B6672;
+    --line:#D8DEE5;
+    --petrol:#0E5A63;
+    --petrol-soft:#E2EEEF;
+    --amber:#C97A1A;
+    --amber-soft:#F8ECDB;
+    --ok:#1D7A46;   --ok-bg:#E3F2E9;
+    --warn:#A66A00; --warn-bg:#FBF0DA;
+    --no:#8A2C2C;   --no-bg:#F6E4E4;
+    --unknown:#5B6672; --unknown-bg:#EAEDF1;
+    --bar-track:#E8ECF0;
+    --radius:10px;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Noto Sans TC',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+    padding:20px 14px 56px;
+    max-width:1100px;
+    margin:0 auto;
+  }
+
+  /* ── Header ─────────────────────────── */
+  header{margin-bottom:28px}
+  .stamp{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.14em;
+    color:var(--petrol);
+    text-transform:uppercase;
+    display:flex;align-items:center;gap:8px;
+    margin-bottom:10px;
+  }
+  .stamp::before{content:"";display:inline-block;width:22px;height:2px;background:var(--petrol)}
+  h1{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;
+    font-size:clamp(24px,5.4vw,38px);
+    line-height:1.25;
+    letter-spacing:.01em;
+  }
+  .sub{color:var(--ink-soft);font-size:14px;margin-top:8px;max-width:640px}
+
+  /* ── Legend ─────────────────────────── */
+  .legend{
+    display:flex;flex-wrap:wrap;gap:8px 14px;
+    margin-top:16px;font-size:12px;color:var(--ink-soft);
+  }
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+
+  /* ── Tier section ───────────────────── */
+  section{margin-top:34px}
+  .tier-head{
+    display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+    margin-bottom:10px;
+  }
+  .tier-head h2{
+    font-family:'Noto Serif TC',serif;
+    font-weight:900;font-size:20px;
+  }
+  .tier-head .price-band{
+    font-family:var(--mono);font-size:11px;color:var(--ink-soft);
+  }
+
+  .table-wrap{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    box-shadow:0 1px 2px rgba(24,34,48,.05);
+  }
+  table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+  thead th{
+    font-family:var(--mono);
+    font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-soft);font-weight:600;
+    text-align:left;
+    padding:12px 14px 8px;
+    border-bottom:2px solid var(--ink);
+    background:var(--surface);
+    white-space:nowrap;
+  }
+  tbody td{
+    padding:14px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#F7F9FA}
+
+  /* sticky first column */
+  th:first-child,td:first-child{
+    position:sticky;left:0;background:var(--surface);
+    min-width:150px;max-width:190px;
+    box-shadow:1px 0 0 var(--line);
+  }
+  tbody tr:hover td:first-child{background:#F7F9FA}
+
+  .model-name{font-weight:700;font-size:14.5px;line-height:1.35}
+  .vendor{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-soft);margin-top:3px}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none}
+  .dot.anthropic{background:#B0562F}
+  .dot.openai{background:#0F7B6C}
+  .dot.google{background:#2A5BD7}
+  .dot.xai{background:#30343B}
+  .dot.deepseek{background:#4B3FBF}
+  .dot.cn-kimi{background:#111}
+  .dot.cn-qwen{background:#6236FF}
+  .dot.cn-glm{background:#1F6FEB}
+  .dot.cn-tencent{background:#0A6CFF}
+
+  .date{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+  .date small{display:block;color:var(--ink-soft);font-family:'Noto Sans TC',sans-serif;font-size:11px}
+
+  /* ── Signature: inline cost bar ─────── */
+  .price{min-width:170px}
+  .price .nums{font-family:var(--mono);font-size:13px;font-weight:600;white-space:nowrap}
+  .price .nums em{font-style:normal;color:var(--ink-soft);font-weight:400}
+  .costbar{
+    margin-top:6px;height:6px;border-radius:3px;
+    background:var(--bar-track);position:relative;overflow:hidden;max-width:150px;
+  }
+  .costbar i{
+    position:absolute;inset:0 auto 0 0;border-radius:3px;
+    background:linear-gradient(90deg,var(--petrol),var(--amber));
+  }
+  .price .note{font-size:11px;color:var(--ink-soft);margin-top:4px;line-height:1.45}
+
+  .cap{max-width:270px;min-width:210px}
+  .cap b{color:var(--petrol)}
+  .feat{max-width:250px;min-width:200px;color:var(--ink-soft);font-size:13px}
+  .feat b{color:var(--ink)}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:12px;font-weight:500;
+    padding:3px 9px;border-radius:99px;white-space:nowrap;
+  }
+  .badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+  .badge.ok{color:var(--ok);background:var(--ok-bg)}
+  .badge.warn{color:var(--warn);background:var(--warn-bg)}
+  .badge.no{color:var(--no);background:var(--no-bg)}
+  .badge.unknown{color:var(--unknown);background:var(--unknown-bg)}
+  .bedrock-note{display:block;font-size:11px;color:var(--ink-soft);margin-top:5px;max-width:150px;white-space:normal}
+
+  .swipe-hint{
+    font-size:11px;color:var(--ink-soft);margin-top:6px;
+    font-family:var(--mono);letter-spacing:.05em;
+  }
+
+  /* ── Footnotes ──────────────────────── */
+  .notes{
+    margin-top:40px;background:var(--petrol-soft);
+    border:1px solid #C4DADC;border-radius:var(--radius);
+    padding:18px 20px;font-size:13px;
+  }
+  .notes h3{
+    font-family:'Noto Serif TC',serif;font-weight:900;font-size:16px;
+    margin-bottom:10px;color:var(--petrol);
+  }
+  .notes li{margin:6px 0 6px 1.2em}
+  footer{
+    margin-top:26px;font-family:var(--mono);
+    font-size:11px;color:var(--ink-soft);letter-spacing:.06em;
+  }
+
+  @media (max-width:640px){
+    body{padding:16px 10px 48px}
+    thead th,tbody td{padding:11px 10px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="stamp">Frontier Model Index · 2026.07.29</div>
+  <h1>2026 主流 AI 模型比較表</h1>
+  <p class="sub">涵蓋 Anthropic、OpenAI、Google、xAI 及中國的 DeepSeek、月之暗面、阿里通義、智譜、騰訊最新一波模型：功能、API 價格、能力與 Amazon Bedrock 支援狀況。價格單位為每百萬 tokens（輸入 / 輸出，美元）。</p>
+  <div class="legend">
+    <span><span class="dot anthropic"></span>Anthropic</span>
+    <span><span class="dot openai"></span>OpenAI</span>
+    <span><span class="dot google"></span>Google</span>
+    <span><span class="dot xai"></span>xAI</span>
+    <span><span class="dot deepseek"></span>DeepSeek</span>
+    <span><span class="dot cn-kimi"></span>月之暗面</span>
+    <span><span class="dot cn-qwen"></span>通義</span>
+    <span><span class="dot cn-glm"></span>智譜</span>
+    <span><span class="dot cn-tencent"></span>騰訊</span>
+    <span style="margin-left:auto">價格條 = 相對輸出單價（以 $50 為滿格）</span>
+  </div>
+</header>
+
+<!-- ═══════ 頂級旗艦 ═══════ -->
+<section>
+  <div class="tier-head">
+    <h2>頂級旗艦</h2>
+    <span class="price-band">FLAGSHIP · 追求能力上限</span>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>模型</th><th>上市時間</th><th>API 價格</th><th>能力亮點</th><th>功能特色</th><th>Bedrock</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="model-name">Claude Fable 5</div>
+          <div class="vendor"><span class="dot anthropic"></span>Anthropic · Mythos 級</div>
+        </td>
+        <td class="date">2026-06-09</td>
+        <td class="price">
+          <div class="nums">$10 <em>/</em> $50</div>
+          <div class="costbar"><i style="width:100%"></i></div>
+          <div class="note">30 天資料保留要求</div>
+        </td>
+        <td class="cap">SWE-bench Pro <b>80.3%</b>、FrontierCode Diamond 29.3%。長時程自主任務目前最強。</td>
+        <td class="feat"><b>1M context</b>。可跨多日自主運作、規劃階段、委派子代理並自我驗證。</td>
+        <td><span class="badge ok">已支援</span><span class="bedrock-note">6/9 上架；7/1 起加強護欄後重新開放</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">GPT-5.6 Sol</div>
+          <div class="vendor"><span class="dot openai"></span>OpenAI · 旗艦</div>
+        </td>
+        <td class="date">2026-07-09</td>
+        <td class="price">
+          <div class="nums">$5 <em>/</em> $30</div>
+          <div class="costbar"><i style="width:60%"></i></div>
+        </td>
+        <td class="cap">AA 編碼代理指數 <b>80</b>（高 Fable 5 約 2.8 分、tokens 用量不到一半）；Agents' Last Exam 53.6。</td>
+        <td class="feat"><b>ultra 多代理模式</b>可平行協調多個代理；主打 token 效率（官方稱編碼省 54%）。</td>
+        <td><span class="badge ok">已支援</span><span class="bedrock-note">7/20 GA 上架 Bedrock（Sol/Terra/Luna 同步）</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">Gemini 3.5 Pro</div>
+          <div class="vendor"><span class="dot google"></span>Google · 旗艦</div>
+        </td>
+        <td class="date">未發布<small>合作夥伴測試中</small></td>
+        <td class="price"><div class="nums">—</div></td>
+        <td class="cap">傳出因幻覺率與可靠性未達標，DeepMind 重建底層架構；原定 6 月、7/17 兩度跳票，截至 7 月底仍僅少數企業合作夥伴測試中，未有公開時間表。</td>
+        <td class="feat">傳聞強化影片理解與前端／視覺程式碼生成。</td>
+        <td><span class="badge no">不支援</span><span class="bedrock-note">Gemini 系列走 Vertex AI</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="swipe-hint">← 左右滑動看完整欄位 →</div>
+</section>
+
+<!-- ═══════ 高階主力 ═══════ -->
+<section>
+  <div class="tier-head">
+    <h2>高階主力</h2>
+    <span class="price-band">HIGH-END · 日常專業工作的甜蜜點</span>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>模型</th><th>上市時間</th><th>API 價格</th><th>能力亮點</th><th>功能特色</th><th>Bedrock</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="model-name">Claude Opus 5</div>
+          <div class="vendor"><span class="dot anthropic"></span>Anthropic</div>
+        </td>
+        <td class="date">2026-07-24</td>
+        <td class="price">
+          <div class="nums">$5 <em>/</em> $25</div>
+          <div class="costbar"><i style="width:50%"></i></div>
+          <div class="note">Fast 模式為 2 倍價、約 2.5 倍速</div>
+        </td>
+        <td class="cap">Frontier-Bench <b>43.3%</b>（Fable 5 為 33.7%）；OSWorld 2.0 以約 1/3 成本超越 Fable 5 最佳成績。</td>
+        <td class="feat"><b>1M context、128K 輸出</b>、思考預設開啟、effort 可調到 max、支援零資料保留（ZDR）、官方稱最對齊模型。</td>
+        <td><span class="badge ok">已支援</span><span class="bedrock-note">7/24 發布當日上架</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">Claude Opus 4.8</div>
+          <div class="vendor"><span class="dot anthropic"></span>Anthropic</div>
+        </td>
+        <td class="date">2026-05-28</td>
+        <td class="price">
+          <div class="nums">$5 <em>/</em> $25</div>
+          <div class="costbar"><i style="width:50%"></i></div>
+        </td>
+        <td class="cap">SWE-bench Pro <b>69.2%</b>。上一代主力，複雜推理與代理編碼仍屬第一梯隊。</td>
+        <td class="feat">1M context、ZDR。適合尚未遷移到 Opus 5 的既有工作流。</td>
+        <td><span class="badge ok">已支援</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">GPT-5.5</div>
+          <div class="vendor"><span class="dot openai"></span>OpenAI</div>
+        </td>
+        <td class="date">2026-04月</td>
+        <td class="price">
+          <div class="nums">約 $5 輸入</div>
+          <div class="note">輸出價未逐項核實；超過 272K 輸入以 2 倍計價</div>
+        </td>
+        <td class="cap">Terminal-Bench 2.0 <b>82.7%</b>、SWE-Bench Pro 58.6%。代理式編碼強項。</td>
+        <td class="feat">reasoning effort 五檔（none–xhigh）；深度整合 Codex。</td>
+        <td><span class="badge ok">已支援</span><span class="bedrock-note">4/28 起全家族上架</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">Grok 4.5</div>
+          <div class="vendor"><span class="dot xai"></span>xAI</div>
+        </td>
+        <td class="date">2026-07-08</td>
+        <td class="price">
+          <div class="nums">$2 <em>/</em> $6</div>
+          <div class="costbar"><i style="width:12%"></i></div>
+          <div class="note">快取輸入 $0.50；≥200K tokens 提示全費率加倍</div>
+        </td>
+        <td class="cap">SWE Marathon 表現突出、Terminal Bench 2.1 領先梯隊；<b>即時聯網／X 平台資訊</b>是招牌。</td>
+        <td class="feat"><b>500K context</b>、文字＋圖片輸入；主打長任務、工具調用、錯誤恢復。</td>
+        <td><span class="badge warn">部分支援</span><span class="bedrock-note">Grok 4.3 已上架（6月），4.5 尚未確認</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="swipe-hint">← 左右滑動看完整欄位 →</div>
+</section>
+
+<!-- ═══════ 中階／高性價比 ═══════ -->
+<section>
+  <div class="tier-head">
+    <h2>中階／高性價比</h2>
+    <span class="price-band">WORKHORSE · 大量 agent 工作負載</span>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>模型</th><th>上市時間</th><th>API 價格</th><th>能力亮點</th><th>功能特色</th><th>Bedrock</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="model-name">Claude Sonnet 5</div>
+          <div class="vendor"><span class="dot anthropic"></span>Anthropic</div>
+        </td>
+        <td class="date">2026-06-30</td>
+        <td class="price">
+          <div class="nums">$2 <em>/</em> $10</div>
+          <div class="costbar"><i style="width:20%"></i></div>
+          <div class="note">優惠至 8/31，之後 $3 / $15</div>
+        </td>
+        <td class="cap">SWE-bench Pro <b>63.2%</b>、OSWorld 81.2%、Terminal-Bench 2.1 80.4%——貼近 Opus 4.8。</td>
+        <td class="feat"><b>1M context、128K 輸出</b>、推理強度可選（low–x-high）；注意新 tokenizer 同文本 tokens 可能多 1.0–1.35 倍。</td>
+        <td><span class="badge ok">已支援</span><span class="bedrock-note">6/30 上架</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">GPT-5.6 Terra</div>
+          <div class="vendor"><span class="dot openai"></span>OpenAI</div>
+        </td>
+        <td class="date">2026-07-09</td>
+        <td class="price">
+          <div class="nums">$2.50 <em>/</em> $15</div>
+          <div class="costbar"><i style="width:30%"></i></div>
+          <div class="note">官方稱與 GPT-5.5 同級、成本約砍半</div>
+        </td>
+        <td class="cap">效能與上一代旗艦 GPT-5.5 相當，定位企業批量場景。</td>
+        <td class="feat">GPT-5.6 系列中的均衡款；Microsoft 365 Copilot 首選模型之一。</td>
+        <td><span class="badge ok">已支援</span><span class="bedrock-note">7/20 隨 GPT-5.6 家族 GA 上架</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">Gemini 3.6 Flash</div>
+          <div class="vendor"><span class="dot google"></span>Google</div>
+        </td>
+        <td class="date">2026-07-21</td>
+        <td class="price">
+          <div class="nums">$1.50 <em>/</em> $7.50</div>
+          <div class="costbar"><i style="width:15%"></i></div>
+        </td>
+        <td class="cap">編碼與推理品質<b>接近 Gemini Pro</b>；比 3.5 Flash 省 17% 輸出 tokens。</td>
+        <td class="feat"><b>1M context、64K 輸出</b>、原生多模態（文字／圖片／音訊／影片）；多步驟工作流與 IDE agent 最佳化。</td>
+        <td><span class="badge no">不支援</span><span class="bedrock-note">走 Google Vertex AI</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="swipe-hint">← 左右滑動看完整欄位 →</div>
+</section>
+
+<!-- ═══════ 中國模型 ═══════ -->
+<section>
+  <div class="tier-head">
+    <h2>中國模型</h2>
+    <span class="price-band">CHINA · 開源權重＋極致性價比</span>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>模型</th><th>上市時間</th><th>API 價格</th><th>能力亮點</th><th>功能特色</th><th>Bedrock</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="model-name">DeepSeek V4<small style="font-weight:400">-Pro</small></div>
+          <div class="vendor"><span class="dot deepseek"></span>深度求索 · 開源</div>
+        </td>
+        <td class="date">2026-04-24<small>7 月中正式版</small></td>
+        <td class="price">
+          <div class="nums">$0.44 <em>/</em> $0.87</div>
+          <div class="costbar"><i style="width:2%"></i></div>
+          <div class="note">非高峰價；高峰時段（9–12、14–18 時）雙倍。同系列 V4-Flash（284B/13B 激活）約 $0.14 輸入，更便宜</div>
+        </td>
+        <td class="cap">總參數 <b>1.6T</b>（激活 49B）；與 GPT-5.5 同日發布正面對決，性價比重新定義市場。</td>
+        <td class="feat"><b>1M context</b>、Think High / Think Max 兩檔思考模式（reasoning_effort 可調）。</td>
+        <td><span class="badge warn">部分支援</span><span class="bedrock-note">Bedrock 現有 V3.2 / V3.1 / R1，V4 未上架</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">Kimi K3</div>
+          <div class="vendor"><span class="dot cn-kimi"></span>月之暗面 · 開源</div>
+        </td>
+        <td class="date">2026-07-16<small>開源權重 7/26</small></td>
+        <td class="price">
+          <div class="nums">$3 <em>/</em> $15</div>
+          <div class="costbar"><i style="width:30%"></i></div>
+          <div class="note">快取輸入 $0.30；1M context 全程均一價、不加收長上下文費率</div>
+        </td>
+        <td class="cap">總參數 <b>2.8T</b>（A104B），目前業界總參數量最大的開源模型；主打 Agent 任務。</td>
+        <td class="feat"><b>1M context</b>、MoE 896 專家（每次激活 16 個）、原生視覺理解。權重非 MIT，採專屬「Kimi K3 License」（MAU 超 1 億需另簽約）。</td>
+        <td><span class="badge warn">部分支援</span><span class="bedrock-note">Bedrock 現有 Kimi K2.5，K3 未上架</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">Qwen3.8-Max<small style="font-weight:400">-Preview</small></div>
+          <div class="vendor"><span class="dot cn-qwen"></span>阿里通義 · 閉源旗艦</div>
+        </td>
+        <td class="date">2026-07-19<small>Preview</small></td>
+        <td class="price">
+          <div class="nums">未逐項公布</div>
+          <div class="note">採 Token Plan 訂閱制（Lite $6/月起），非逐項 API 計價</div>
+        </td>
+        <td class="cap"><b>2.4T</b> 參數稀疏 MoE、多模態（文字/圖片/影片/文件）；未公開跑分與模型卡，第三方測試稱編碼優於 K3、GPT-5.6 Sol。通義另以<b>最完整的開源生態</b>著稱（全尺寸覆蓋、1M context 的 Qwen3.6-Plus）。</td>
+        <td class="feat">Agent 任務導向；開源版可透過 Ollama / vLLM 本地部署。</td>
+        <td><span class="badge warn">部分支援</span><span class="bedrock-note">Bedrock 有 Qwen3 開源系列（含 Coder），Max 閉源版無</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">GLM-5.2</div>
+          <div class="vendor"><span class="dot cn-glm"></span>智譜 AI · 開源</div>
+        </td>
+        <td class="date">2026-06</td>
+        <td class="price">
+          <div class="nums">$0.70 <em>/</em> $2.20</div>
+          <div class="costbar"><i style="width:4%"></i></div>
+        </td>
+        <td class="cap">網路安全漏洞檢測 F1 值 <b>39%</b>，該項超越 Claude Code（32%）；程式碼安全是招牌。</td>
+        <td class="feat"><b>1M context</b>、MoE 架構、開源權重。</td>
+        <td><span class="badge warn">部分支援</span><span class="bedrock-note">Bedrock 現有 GLM-5，5.2 未上架</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">混元 Hy-3</div>
+          <div class="vendor"><span class="dot cn-tencent"></span>騰訊 · 開源</div>
+        </td>
+        <td class="date">2026-07-06<small>正式版（4/23 Preview）</small></td>
+        <td class="price">
+          <div class="nums">≈$0.14 <em>/</em> $0.56</div>
+          <div class="costbar"><i style="width:1%"></i></div>
+          <div class="note">原幣人民幣 1 元 / 4 元，按約 7.15 匯率換算</div>
+        </td>
+        <td class="cap">295B 總參數（激活 21B）快慢思考融合 MoE；官方稱 Agent 任務解決率達 90%，以較小規模打平中外旗艦水準。</td>
+        <td class="feat">256K context、Apache 2.0 開源；已上架 OpenRouter／HuggingFace／Modelscope，並整合進騰訊元寶、CodeBuddy、ima。</td>
+        <td><span class="badge no">不支援</span><span class="bedrock-note">已上架海外開源平台，Bedrock 尚未見公告</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="swipe-hint">← 左右滑動看完整欄位 →</div>
+</section>
+
+<!-- ═══════ 輕量入門 ═══════ -->
+<section>
+  <div class="tier-head">
+    <h2>輕量入門</h2>
+    <span class="price-band">LIGHTWEIGHT · 高頻低延遲</span>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>模型</th><th>上市時間</th><th>API 價格</th><th>能力亮點</th><th>功能特色</th><th>Bedrock</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="model-name">Claude Haiku 4.5</div>
+          <div class="vendor"><span class="dot anthropic"></span>Anthropic</div>
+        </td>
+        <td class="date">2025-10</td>
+        <td class="price"><div class="nums">$1 <em>/</em> $5</div><div class="costbar"><i style="width:10%"></i></div></td>
+        <td class="cap">Anthropic 最便宜快速的選項。</td>
+        <td class="feat">適合分類、抽取、大量輕任務。</td>
+        <td><span class="badge ok">已支援</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">GPT-5.6 Luna</div>
+          <div class="vendor"><span class="dot openai"></span>OpenAI</div>
+        </td>
+        <td class="date">2026-07-09</td>
+        <td class="price">
+          <div class="nums">$1 <em>/</em> $6</div>
+          <div class="costbar"><i style="width:12%"></i></div>
+        </td>
+        <td class="cap">GPT-5.6 系列最快、最省預算的版本。</td>
+        <td class="feat">低延遲對話與即時問答場景。</td>
+        <td><span class="badge ok">已支援</span><span class="bedrock-note">7/20 隨 GPT-5.6 家族 GA 上架</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="model-name">Gemini 3.5 Flash-Lite</div>
+          <div class="vendor"><span class="dot google"></span>Google</div>
+        </td>
+        <td class="date">2026-07-21</td>
+        <td class="price"><div class="nums">未逐項公布</div></td>
+        <td class="cap">Google 官方定位「最快、最省成本」。</td>
+        <td class="feat">輕量 agent 工作流；將陸續整合進 Google 搜尋。</td>
+        <td><span class="badge no">不支援</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="swipe-hint">← 左右滑動看完整欄位 →</div>
+</section>
+
+<!-- ═══════ 備註 ═══════ -->
+<div class="notes">
+  <h3>Bedrock 與使用備註</h3>
+  <ul>
+    <li>Bedrock 目前涵蓋 <b>18 家供應商</b>：Claude 全系列、OpenAI（GPT-5.5 與 GPT-OSS 開源版）、Meta Llama、Mistral、Qwen3、DeepSeek、GLM、Kimi、MiniMax、Grok 等。</li>
+    <li><b>Claude 上架最即時</b>——Opus 5、Sonnet 5、Fable 5 都是發布當日或同步上架，且 Opus 5 在 AWS 支援零資料保留（ZDR），對合規敏感的企業是關鍵差異。</li>
+    <li>GPT-5.6 家族已於 7/20 全面 GA 上架 Bedrock，上架速度明顯加快；但 Grok 4.5、DeepSeek V4 等剛發布不滿一個月的模型通常仍有數週至數月延遲，部署前請在 Bedrock console 確認實際 model ID 與區域可用性。</li>
+    <li><b>中國模型的共同特徵</b>：幾乎全採 MoE 架構、多數開源權重（MIT / Apache 2.0），並以極低定價競爭；Bedrock 上架的通常是前一代版本（Kimi K2.5、GLM-5、Qwen3、DeepSeek V3.2），最新旗艦（K3、V4、GLM-5.2）需走各家官方 API 或自行部署。</li>
+    <li>各家跑分多出自官方發布資料，測試環境與推理檔位不同，僅供方向參考；實際選型建議以自己的工作負載驗證。</li>
+  </ul>
+</div>
+
+<footer>資料整理日期：2026-07-29 · 價格與支援狀況可能隨時變動</footer>
+
+</body>
+</html>

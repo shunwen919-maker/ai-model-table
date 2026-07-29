@@ -1,0 +1,6 @@
+.telegram_token
+.telegram_chat_id
+.github_token
+.github_credential_helper.sh
+logs/
+backups/
