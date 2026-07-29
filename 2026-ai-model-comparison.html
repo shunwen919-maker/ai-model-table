@@ -5,31 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2026 主流 AI 模型比較表</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#EDF0F3;
+    --bg:#FDFAF8;
     --surface:#FFFFFF;
-    --ink:#182230;
-    --ink-soft:#5B6672;
-    --line:#D8DEE5;
-    --petrol:#0E5A63;
-    --petrol-soft:#E2EEEF;
-    --amber:#C97A1A;
-    --amber-soft:#F8ECDB;
-    --ok:#1D7A46;   --ok-bg:#E3F2E9;
-    --warn:#A66A00; --warn-bg:#FBF0DA;
-    --no:#8A2C2C;   --no-bg:#F6E4E4;
-    --unknown:#5B6672; --unknown-bg:#EAEDF1;
-    --bar-track:#E8ECF0;
-    --radius:10px;
-    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --ink:#100703;
+    --ink-soft:#726863;
+    --line:#EFE3DC;
+    --primary:#E83C00;
+    --primary-soft:#FFF0EB;
+    --glow:#FF6600;
+    --ok:#1D7A46;   --ok-bg:#E6F4EC;
+    --warn:#B45309; --warn-bg:#FEF3E2;
+    --no:#B42318;   --no-bg:#FEE9E7;
+    --unknown:#726863; --unknown-bg:#F2EDEA;
+    --bar-track:#F2EAE5;
+    --radius:12px;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'IBM Plex Sans','Noto Sans TC',system-ui,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
   body{
-    font-family:'Noto Sans TC',system-ui,sans-serif;
+    font-family:var(--sans);
     background:var(--bg);
+    background-image:
+      radial-gradient(1200px 400px at 50% -100px, hsl(16 100% 45% / .06), transparent 70%);
     color:var(--ink);
     line-height:1.6;
     padding:20px 14px 56px;
@@ -38,45 +40,58 @@
   }
 
   /* ── Header ─────────────────────────── */
-  header{margin-bottom:28px}
+  header{margin-bottom:32px}
   .stamp{
     font-family:var(--mono);
     font-size:11px;
+    font-weight:500;
     letter-spacing:.14em;
-    color:var(--petrol);
+    color:var(--primary);
     text-transform:uppercase;
-    display:flex;align-items:center;gap:8px;
-    margin-bottom:10px;
+    display:inline-flex;align-items:center;gap:8px;
+    margin-bottom:14px;
+    padding:5px 12px;
+    border:1px solid #FDD5C8;
+    border-radius:99px;
+    background:hsl(16 100% 45% / .04);
   }
-  .stamp::before{content:"";display:inline-block;width:22px;height:2px;background:var(--petrol)}
+  .stamp::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 8px hsl(16 100% 50% / .8)}
   h1{
-    font-family:'Noto Serif TC',serif;
-    font-weight:900;
-    font-size:clamp(24px,5.4vw,38px);
-    line-height:1.25;
-    letter-spacing:.01em;
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:clamp(26px,5.6vw,42px);
+    line-height:1.2;
+    letter-spacing:-.02em;
   }
-  .sub{color:var(--ink-soft);font-size:14px;margin-top:8px;max-width:640px}
+  h1 .grad{
+    background:linear-gradient(92deg,#E83C00,#E96A00);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+  }
+  .sub{color:var(--ink-soft);font-size:14.5px;margin-top:10px;max-width:640px}
 
   /* ── Legend ─────────────────────────── */
   .legend{
     display:flex;flex-wrap:wrap;gap:8px 14px;
-    margin-top:16px;font-size:12px;color:var(--ink-soft);
+    margin-top:18px;font-size:12px;color:var(--ink-soft);
+    font-family:var(--mono);
   }
   .legend span{display:inline-flex;align-items:center;gap:5px}
 
   /* ── Tier section ───────────────────── */
-  section{margin-top:34px}
+  section{margin-top:40px}
   .tier-head{
     display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
-    margin-bottom:10px;
+    margin-bottom:12px;
   }
   .tier-head h2{
-    font-family:'Noto Serif TC',serif;
-    font-weight:900;font-size:20px;
+    font-family:var(--sans);
+    font-weight:700;font-size:21px;letter-spacing:-.01em;
   }
+  .tier-head h2::before{content:"// ";color:var(--primary);font-family:var(--mono);font-weight:600;font-size:16px}
   .tier-head .price-band{
-    font-family:var(--mono);font-size:11px;color:var(--ink-soft);
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    color:var(--primary);text-transform:uppercase;
   }
 
   .table-wrap{
@@ -85,7 +100,7 @@
     border-radius:var(--radius);
     overflow-x:auto;
     -webkit-overflow-scrolling:touch;
-    box-shadow:0 1px 2px rgba(24,34,48,.05);
+    box-shadow:0 1px 2px rgba(16,7,3,.04),0 8px 24px -12px rgba(232,60,0,.06);
   }
   table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
   thead th{
@@ -93,9 +108,9 @@
     font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
     color:var(--ink-soft);font-weight:600;
     text-align:left;
-    padding:12px 14px 8px;
-    border-bottom:2px solid var(--ink);
-    background:var(--surface);
+    padding:12px 14px 9px;
+    border-bottom:1px solid var(--line);
+    background:#FDFAF8;
     white-space:nowrap;
   }
   tbody td{
@@ -104,7 +119,7 @@
     vertical-align:top;
   }
   tbody tr:last-child td{border-bottom:none}
-  tbody tr:hover{background:#F7F9FA}
+  tbody tr:hover{background:#FFF8F5}
 
   /* sticky first column */
   th:first-child,td:first-child{
@@ -112,10 +127,11 @@
     min-width:150px;max-width:190px;
     box-shadow:1px 0 0 var(--line);
   }
-  tbody tr:hover td:first-child{background:#F7F9FA}
+  thead th:first-child{background:#FDFAF8}
+  tbody tr:hover td:first-child{background:#FFF8F5}
 
-  .model-name{font-weight:700;font-size:14.5px;line-height:1.35}
-  .vendor{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-soft);margin-top:3px}
+  .model-name{font-weight:600;font-size:14.5px;line-height:1.35;letter-spacing:-.01em}
+  .vendor{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-soft);margin-top:3px;font-family:var(--mono)}
   .dot{width:8px;height:8px;border-radius:50%;flex:none}
   .dot.anthropic{background:#B0562F}
   .dot.openai{background:#0F7B6C}
@@ -128,7 +144,7 @@
   .dot.cn-tencent{background:#0A6CFF}
 
   .date{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
-  .date small{display:block;color:var(--ink-soft);font-family:'Noto Sans TC',sans-serif;font-size:11px}
+  .date small{display:block;color:var(--ink-soft);font-family:var(--sans);font-size:11px}
 
   /* ── Signature: inline cost bar ─────── */
   .price{min-width:170px}
@@ -140,26 +156,27 @@
   }
   .costbar i{
     position:absolute;inset:0 auto 0 0;border-radius:3px;
-    background:linear-gradient(90deg,var(--petrol),var(--amber));
+    background:linear-gradient(90deg,#E83C00,#FF9A3D);
   }
   .price .note{font-size:11px;color:var(--ink-soft);margin-top:4px;line-height:1.45}
 
   .cap{max-width:270px;min-width:210px}
-  .cap b{color:var(--petrol)}
+  .cap b{color:var(--primary)}
   .feat{max-width:250px;min-width:200px;color:var(--ink-soft);font-size:13px}
   .feat b{color:var(--ink)}
 
   .badge{
     display:inline-flex;align-items:center;gap:5px;
     font-size:12px;font-weight:500;
-    padding:3px 9px;border-radius:99px;white-space:nowrap;
+    padding:3px 10px;border-radius:99px;white-space:nowrap;
+    font-family:var(--mono);
   }
   .badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
   .badge.ok{color:var(--ok);background:var(--ok-bg)}
   .badge.warn{color:var(--warn);background:var(--warn-bg)}
   .badge.no{color:var(--no);background:var(--no-bg)}
   .badge.unknown{color:var(--unknown);background:var(--unknown-bg)}
-  .bedrock-note{display:block;font-size:11px;color:var(--ink-soft);margin-top:5px;max-width:150px;white-space:normal}
+  .bedrock-note{display:block;font-size:11px;color:var(--ink-soft);margin-top:5px;max-width:150px;white-space:normal;font-family:var(--sans)}
 
   .swipe-hint{
     font-size:11px;color:var(--ink-soft);margin-top:6px;
@@ -168,38 +185,44 @@
 
   /* ── Daily news ─────────────────────── */
   .daily-news{
-    margin-top:40px;background:var(--paper,#fff);
-    border:1px solid #C4DADC;border-radius:var(--radius);
-    padding:18px 20px;font-size:13px;
+    margin-top:44px;background:var(--surface);
+    border:1px solid #FDD5C8;border-radius:var(--radius);
+    padding:20px 22px;font-size:13px;
+    box-shadow:0 1px 2px rgba(16,7,3,.04),0 12px 32px -16px rgba(232,60,0,.12);
+    position:relative;overflow:hidden;
+  }
+  .daily-news::before{
+    content:"";position:absolute;inset:0 0 auto 0;height:3px;
+    background:linear-gradient(90deg,#E83C00,#FF9A3D);
   }
   .daily-news h3{
-    font-family:'Noto Serif TC',serif;font-weight:900;font-size:16px;
-    margin-bottom:4px;color:var(--petrol);
+    font-family:var(--sans);font-weight:700;font-size:17px;
+    margin-bottom:4px;letter-spacing:-.01em;
   }
   .daily-news .news-date{
-    font-family:var(--mono);font-size:11px;color:var(--ink-soft);
-    letter-spacing:.06em;margin-bottom:12px;
+    font-family:var(--mono);font-size:11px;color:var(--primary);
+    letter-spacing:.08em;margin-bottom:12px;text-transform:uppercase;
   }
   .daily-news h4{
-    font-size:13.5px;font-weight:700;margin:14px 0 6px;color:var(--ink,#222);
+    font-size:13.5px;font-weight:600;margin:16px 0 6px;color:var(--ink);
   }
   .daily-news li{margin:6px 0 6px 1.2em}
-  .daily-news li a{color:var(--petrol);word-break:break-all}
+  .daily-news li a{color:var(--primary);word-break:break-all}
   .daily-news .none{color:var(--ink-soft)}
 
   /* ── Footnotes ──────────────────────── */
   .notes{
-    margin-top:40px;background:var(--petrol-soft);
-    border:1px solid #C4DADC;border-radius:var(--radius);
-    padding:18px 20px;font-size:13px;
+    margin-top:40px;background:var(--primary-soft);
+    border:1px solid #FDD5C8;border-radius:var(--radius);
+    padding:20px 22px;font-size:13px;
   }
   .notes h3{
-    font-family:'Noto Serif TC',serif;font-weight:900;font-size:16px;
-    margin-bottom:10px;color:var(--petrol);
+    font-family:var(--sans);font-weight:700;font-size:16px;
+    margin-bottom:10px;color:var(--primary);letter-spacing:-.01em;
   }
   .notes li{margin:6px 0 6px 1.2em}
   footer{
-    margin-top:26px;font-family:var(--mono);
+    margin-top:28px;font-family:var(--mono);
     font-size:11px;color:var(--ink-soft);letter-spacing:.06em;
   }
 
@@ -216,7 +239,7 @@
 
 <header>
   <div class="stamp">Frontier Model Index · 2026.07.29</div>
-  <h1>2026 主流 AI 模型比較表</h1>
+  <h1>2026 主流 <span class="grad">AI 模型</span>比較表</h1>
   <p class="sub">涵蓋 Anthropic、OpenAI、Google、xAI 及中國的 DeepSeek、月之暗面、阿里通義、智譜、騰訊最新一波模型：功能、API 價格、能力與 Amazon Bedrock 支援狀況。價格單位為每百萬 tokens（輸入 / 輸出，美元）。</p>
   <div class="legend">
     <span><span class="dot anthropic"></span>Anthropic</span>
